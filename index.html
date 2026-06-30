@@ -901,9 +901,27 @@ function onFormInput(){
     atual.codigos = coletarCodigos();
     atual.diag_resumo = getDiag1();
     atual.atualizado_em = new Date().toISOString();
-    await salvarLocal();
-    limparDraftLocal(atual.id);
+    const ok = await salvarLocal();
+    if (ok) limparDraftLocal(atual.id); // só apaga draft se salvou com sucesso
   }, 4000);
+}
+
+// Salva periodicamente durante ociosidade (a cada 90s) para manter sessão viva
+let _idleInterval = null;
+function iniciarIdleKeepAlive(){
+  pararIdleKeepAlive();
+  _idleInterval = setInterval(async () => {
+    if (!atual) return;
+    atual.medidas = coletarMedidas();
+    atual.codigos = coletarCodigos();
+    atual.diag_resumo = getDiag1();
+    atual.atualizado_em = new Date().toISOString();
+    salvarDraftLocal();
+    await salvarLocal();
+  }, 90000);
+}
+function pararIdleKeepAlive(){
+  if (_idleInterval) { clearInterval(_idleInterval); _idleInterval = null; }
 }
 
 // ============================================================
@@ -1333,7 +1351,11 @@ function calcular(){
       } else { set('c_vaei', null); }
 
       if (vad !== null && sc) {
-        set('c_vadi', (vad/sc).toFixed(0),' ml/m²');
+        const vadi = vad/sc;
+        vadiEl.textContent = vadi.toFixed(0) + ' ml/m²';
+        const corVadi = vadi > 44 ? '#dc2626' : vadi > 38 ? '#ea580c' : vadi >= 33 ? '#2563eb' : '';
+        if (corVadi) vadiEl.style.setProperty('color', corVadi, 'important');
+        else vadiEl.style.removeProperty('color');
         vadiEl.style.display = ''; vadiLbl.style.display = '';
       } else {
         vadiEl.style.display = 'none'; vadiLbl.style.display = 'none';
@@ -2016,6 +2038,7 @@ function abrirAnalise(id){
   atual=exames.find(e=>e.id===id);
   if(!atual) return;
   emAnalise = true;
+  iniciarIdleKeepAlive();
   _undoStack = [];
   _redoStack = [];
   _lastUndoPush = 0;
@@ -2057,6 +2080,7 @@ function abrirAnalise(id){
 
 function voltarLista(){
   emAnalise = false;
+  pararIdleKeepAlive();
   atual = null;
   document.getElementById('pg_an').style.display='none';
   setPage(pgAtual==='inbox'||pgAtual==='conc'?pgAtual:'inbox');
@@ -2540,6 +2564,15 @@ async function carregarExames(){
 
 async function salvarLocal(){
   if (!atual) return false;
+  // Garante sessão ativa antes de salvar (evita falha por ociosidade)
+  try {
+    const { data: sd } = await supa.auth.getSession();
+    if (!sd?.session) {
+      const { error: re } = await supa.auth.refreshSession();
+      if (re) { console.error('Sessão expirada:', re); return false; }
+    }
+  } catch(e) { console.error('Erro ao verificar sessão:', e); return false; }
+
   const { error } = await supa.from('exames').upsert({
     id: atual.id,
     user_id: _userId,
