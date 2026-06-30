@@ -506,6 +506,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="m-row"><span class="m-lbl">PAD</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_pad" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mmHg</span></div>
           <div class="calc-row" id="psvd_row" style="display:none;margin-top:6px;justify-content:center;gap:6px"><span class="c-lbl">PSVD</span><span class="c-val" id="c_psvd">—</span></div>
         </div>
+        <div class="sec">
+          <div class="sec-ttl">PISA</div>
+          <div class="m-row"><span class="m-lbl">VENA</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_pisa_vena" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mm</span></div>
+          <div class="m-row"><span class="m-lbl">RAIO</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_pisa_raio" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">cm</span></div>
+          <div class="m-row"><span class="m-lbl">VAL</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_pisa_val" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">cm/s</span></div>
+          <div class="m-row"><span class="m-lbl">Vmax</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_pisa_vmax" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">m/s</span></div>
+          <div class="m-row"><span class="m-lbl">VTI</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_pisa_vti" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">cm</span></div>
+          <div style="border-top:1px solid #f0f0f0;margin:6px 0"></div>
+          <div class="calc-row"><span class="c-lbl">EROA</span><span class="c-val em" id="c_pisa_eroa">—</span></div>
+          <div class="calc-row" style="margin-top:2px"><span class="c-lbl">VR</span><span class="c-val em" id="c_pisa_vr">—</span></div>
+          <div class="calc-row" style="margin-top:2px"><span class="c-lbl">FR</span><span class="c-val em" id="c_pisa_fr">—</span></div>
+        </div>
       </div>
 
       <!-- ── COL 2: PRÉ-LAUDO (MINIMALISTA) ── -->
@@ -1441,6 +1453,40 @@ function calcular(){
     }
   }
 
+  // PISA — EROA, VR (Volume Regurgitante), FR (Fração Regurgitante)
+  { const raio  = g('m_pisa_raio');   // cm
+    const val   = g('m_pisa_val');    // cm/s  (velocidade de aliasing)
+    const vmax  = g('m_pisa_vmax');   // m/s  (velocidade máxima do jato)
+    const vti   = g('m_pisa_vti');    // cm
+    if (raio !== null && val !== null && vmax !== null && vmax !== 0) {
+      const eroa = 2 * Math.PI * raio * raio * val / (vmax * 100); // vmax→cm/s; resultado em cm²
+      set('c_pisa_eroa', eroa.toFixed(2), ' cm²');
+      if (vti !== null) {
+        const vr = eroa * vti; // mL
+        set('c_pisa_vr', vr.toFixed(0), ' mL');
+        // FR = VR / (SV_forward + VR) × 100  — SV_forward via VSVE
+        const vsvD = g('m_vsve_d'), vsvVti = g('m_vsve_vti');
+        if (vsvD && vsvVti) {
+          const r_cm = (vsvD / 10) / 2;
+          const svFwd = Math.PI * r_cm * r_cm * vsvVti;
+          const fr = vr / (svFwd + vr) * 100;
+          const frEl = document.getElementById('c_pisa_fr');
+          frEl.textContent = fr.toFixed(0) + '%';
+          frEl.style.color = fr >= 50 ? '#dc2626' : fr >= 30 ? '#ea580c' : '';
+        } else {
+          set('c_pisa_fr', null);
+        }
+      } else {
+        set('c_pisa_vr', null);
+        set('c_pisa_fr', null);
+      }
+    } else {
+      set('c_pisa_eroa', null);
+      set('c_pisa_vr', null);
+      set('c_pisa_fr', null);
+    }
+  }
+
   // Diastólica — E/A, E/e´ médio e classificação ASE 2025
   { const e = g('m_diast_e'), a = g('m_diast_a');
     const esep = g('m_diast_esep'), elat = g('m_diast_elat');
@@ -1818,7 +1864,8 @@ function carregarForm(e){
    'm_ve_mapse','m_ve_onds',
    'm_vd_tapse','m_vd_onds','m_vd_fac','m_vd_dpdt',
    'm_diast_e','m_diast_a','m_diast_esep','m_diast_elat',
-   'm_vmax_it'].forEach(id=>{
+   'm_vmax_it',
+   'm_pisa_vena','m_pisa_raio','m_pisa_val','m_pisa_vmax','m_pisa_vti'].forEach(id=>{
     const el = document.getElementById(id);
     if (el) { el.value = m[id]!==undefined?m[id]:''; marcar(el); }
   });
@@ -1863,7 +1910,8 @@ function coletarMedidas(){
    'm_ve_mapse','m_ve_onds',
    'm_vd_tapse','m_vd_onds','m_vd_fac','m_vd_dpdt',
    'm_diast_e','m_diast_a','m_diast_esep','m_diast_elat',
-   'm_vmax_it'].forEach(id=>{
+   'm_vmax_it',
+   'm_pisa_vena','m_pisa_raio','m_pisa_val','m_pisa_vmax','m_pisa_vti'].forEach(id=>{
     const el=document.getElementById(id); if(el) m[id]=el.value;
   });
   return m;
