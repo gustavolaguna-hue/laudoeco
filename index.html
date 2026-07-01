@@ -110,7 +110,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .an-acts{display:flex;gap:7px;flex-shrink:0;margin-left:auto}
 
 /* ===== 3 COLUNAS ===== */
-.cols3{display:grid;grid-template-columns:230px 1fr 210px;gap:12px;align-items:start}
+.cols3{display:grid;grid-template-columns:230px 1fr 250px;gap:12px;align-items:start}
 
 /* Coluna: fundo compartilhado */
 .col-card{background:white;border:1px solid #e8e8e8;border-radius:12px;overflow:hidden}
@@ -506,7 +506,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         </div>
         <div class="sec">
           <div class="sec-ttl">Insuficiência Tricúspide</div>
-          <div class="m-row"><span class="m-lbl">Vmax IT</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_vmax_it" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">m/s</span></div>
+          <div class="m-row"><span class="m-lbl">Vel IT</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_vmax_it" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">m/s</span></div>
           <div class="m-row"><span class="m-lbl">PAD</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_pad" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mmHg</span></div>
           <div class="calc-row" id="psvd_row" style="display:none;margin-top:6px;justify-content:center;gap:6px"><span class="c-lbl">PSVD</span><span class="c-val" id="c_psvd">—</span></div>
         </div>
@@ -610,12 +610,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="m-row"><span class="m-lbl">FE Simp.</span><input class="m-inp" type="text" inputmode="decimal" id="m_fe_simp" step="0.1" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">%</span></div>
           <div class="m-row"><span class="m-lbl">dP/dT</span><input class="m-inp" type="text" inputmode="decimal" id="m_dp_dt" step="1" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mmHg/s</span></div>
           <div class="m-row"><span class="m-lbl">MAPSE</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_ve_mapse" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mm</span></div>
-          <div class="m-row"><span class="m-lbl">Onda S´</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_ve_onds" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">m/s</span></div>
+          <div class="m-row"><span class="m-lbl">Onda S´</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_ve_onds" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">cm/s</span></div>
         </div>
         <div class="sec">
           <div class="sec-ttl">Ventrículo Direito</div>
           <div class="m-row"><span class="m-lbl">TAPSE</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_vd_tapse" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mm</span></div>
-          <div class="m-row"><span class="m-lbl">Onda S´</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_vd_onds" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">m/s</span></div>
+          <div class="m-row"><span class="m-lbl">Onda S´</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_vd_onds" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">cm/s</span></div>
           <div class="m-row"><span class="m-lbl">FAC</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_vd_fac" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">%</span></div>
           <div class="m-row"><span class="m-lbl">dP/dT</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_vd_dpdt" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mmHg/s</span></div>
         </div>
@@ -625,7 +625,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="m-row"><span class="m-lbl">Diâmetro</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_vsve_d" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mm</span></div>
           <div class="m-row"><span class="m-lbl">VTI VSVE</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_vsve_vti" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">cm</span></div>
           <div class="m-row"><span class="m-lbl">FC</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_vsve_fc" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">bpm</span></div>
-          <div class="calc-row" id="vsve_svi_row" style="display:none;margin-top:6px"><span class="c-lbl">SVi</span><span class="c-val" id="c_vsve_svi">—</span><span class="c-lbl" id="vsve_ic_lbl" style="display:none;margin-left:12px">IC</span><span class="c-val" id="c_vsve_ic" style="display:none">—</span></div>
+          <div class="calc-row" id="vsve_svi_row" style="display:none;margin-top:6px;justify-content:center;gap:6px"><span class="c-lbl">SVi</span><span class="c-val" id="c_vsve_svi">—</span><span class="c-lbl" id="vsve_ic_lbl" style="display:none;margin-left:12px">IC</span><span class="c-val" id="c_vsve_ic" style="display:none">—</span></div>
         </div>
         <div class="sec">
           <div class="sec-ttl">Estenose Aórtica</div>
@@ -996,6 +996,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   supa.auth.onAuthStateChange(async (event, session) => {
+    // TOKEN_REFRESHED apenas renova credencial — não recarrega dados
+    // para não sobrescrever o estado local durante um save em andamento
+    if (event === 'TOKEN_REFRESHED') {
+      if (session?.user) _userId = session.user.id;
+      return;
+    }
     if (session?.user) {
       _userId = session.user.id;
       document.getElementById('login_overlay').style.display = 'none';
@@ -1147,8 +1153,8 @@ function buildNoLabel(cid, cfg){
   const el = document.getElementById(cid);
   el.classList.add('pl-sm');
   el.innerHTML = cfg.map(f=>`
-    <div class="pl" id="wrap_${f.id}" style="grid-template-columns:40px 1fr">
-      <input class="pl-cod" type="text" inputmode="numeric" id="${f.id}_c" placeholder="—"
+    <div class="pl" id="wrap_${f.id}" style="grid-template-columns:${f.tbl==='DIAGNOSTICO'?'90px':'40px'} 1fr">
+      <input class="pl-cod" type="text" inputmode="${f.tbl==='DIAGNOSTICO'?'text':'numeric'}" id="${f.id}_c" placeholder="—"
              oninput="onCod('${f.id}','${f.tbl}')" onkeydown="navKey(event,this)">
       <span class="pl-txt vz" id="${f.id}_t">—</span>
     </div>`).join('');
@@ -1180,7 +1186,7 @@ function lookup(tbl, code){
 
 function onCod(fid, tbl){
   const inp = document.getElementById(fid+'_c');
-  const code = parseInt(inp.value);
+  const code = parseInt(inp.value); // parseInt ignora tudo após o "/"
   const txtEl = document.getElementById(fid+'_t');
   inp.classList.toggle('has', inp.value !== '' && !isNaN(code) && code >= 0);
 
@@ -1230,7 +1236,12 @@ function atualizarTexto(fid){
   const compEl = document.getElementById(fid+'_k');
   const modEl  = document.getElementById(fid+'_m');
 
-  const code = parseInt(codEl?.value);
+  // Suporte ao formato "diagCode/cont1/cont2/..." ex: 176/911/914
+  const rawVal = codEl?.value || '';
+  const partsRaw = rawVal.split('/');
+  const slashContCodes = partsRaw.slice(1).map(p => parseInt(p.trim())).filter(n => !isNaN(n) && n > 0);
+
+  const code = parseInt(rawVal);
   let texto = '';
 
   if (!isNaN(code) && code > 0) {
@@ -1273,10 +1284,20 @@ function atualizarTexto(fid){
     }
   }
 
-  // Modificador (contracao)
-  if (modEl && parseInt(modEl.value) > 0) {
-    const modTxt = lookup('CONTRACAO', parseInt(modEl.value));
-    if (modTxt) texto += (texto?' ':'')+modTxt;
+  // Remove ponto final do texto principal
+  texto = texto.replace(/\.\s*$/, '');
+
+  // Modificador(es) de contração — via campo _m OU via "/" no código (múltiplos suportados)
+  const contCodes = (modEl && parseInt(modEl.value) > 0)
+    ? [parseInt(modEl.value), ...slashContCodes]
+    : slashContCodes;
+  for (const modTxt of contCodes.map(c => lookup('CONTRACAO', c)).filter(Boolean)) {
+    texto = texto.replace(/\.\s*$/, ''); // remove ponto final antes de cada concatenação
+    if (modTxt.startsWith('/')) {
+      texto += modTxt; // mantém a barra, sem espaço
+    } else {
+      texto += (texto ? ' ' : '') + modTxt;
+    }
   }
 
   // Complemento livre
@@ -1766,7 +1787,7 @@ function atualizarPreview(){
           <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><b>Nome:</b> ${atual.nome||'—'}</span>
           <span style="white-space:nowrap"><b>Nasc:</b> ${fmtD(atual.dn)||'—'}</span>
           <span style="white-space:nowrap"><b>Exame:</b> ${fmtD(atual.data)||'—'}</span>
-          <span style="white-space:nowrap"><b>Alt:</b> ${atual.altura ? atual.altura+' m' : '—'}&nbsp;&nbsp;<b>Peso:</b> ${atual.peso ? atual.peso+' Kg' : '—'}</span>
+          <span style="white-space:nowrap"><b>Alt:</b> ${atual.altura ? (atual.altura/100).toFixed(2).replace('.',',')+' m' : '—'}&nbsp;&nbsp;<b>Peso:</b> ${atual.peso ? atual.peso+' Kg' : '—'}</span>
           <span style="white-space:nowrap"><b>Idade:</b> ${idade!==null?idade:'—'}</span>
           <span style="white-space:nowrap"><b>Reg:</b> ${atual.registro||'—'}</span>
         </div>
@@ -1936,7 +1957,7 @@ function coletarMedidas(){
    'm_ve_mapse','m_ve_onds',
    'm_vd_tapse','m_vd_onds','m_vd_fac','m_vd_dpdt',
    'm_diast_e','m_diast_a','m_diast_esep','m_diast_elat',
-   'm_vmax_it',
+   'm_vmax_it','m_pad','m_dp_dt',
    'm_pisa_vena','m_pisa_raio','m_pisa_val','m_pisa_vmax','m_pisa_vti'].forEach(id=>{
     const el=document.getElementById(id); if(el) m[id]=el.value;
   });
@@ -2212,7 +2233,7 @@ async function salvar(){
   atual.atualizado_em=new Date().toISOString();
   salvarDraftLocal();
   const ok = await salvarLocal();
-  toast(ok ? 'Rascunho salvo!' : 'Sem conexão — salvo localmente.', ok ? '' : 'warn');
+  toast(ok ? 'Salvo!' : 'Sem conexão — salvo localmente.', ok ? 'ok' : 'warn');
 }
 
 function atualizarBotoesStatus(){
@@ -2383,7 +2404,7 @@ function gerarHTMLLaudo(sigImg='', sigOffsetV=20, sigOffsetH=0){
         <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><b>Nome:</b> ${atual.nome||'—'}</span>
         <span style="white-space:nowrap"><b>Data Nasc:</b> ${fmtD(atual.dn)||'—'}</span>
         <span style="white-space:nowrap"><b>Data Exame:</b> ${fmtD(atual.data)||'—'}</span>
-        <span style="white-space:nowrap"><b>Altura:</b> ${atual.altura ? atual.altura+' m' : '—'}&nbsp;&nbsp;<b>Peso:</b> ${atual.peso ? atual.peso+' Kg' : '—'}</span>
+        <span style="white-space:nowrap"><b>Altura:</b> ${atual.altura ? (atual.altura/100).toFixed(2).replace('.',',')+' m' : '—'}&nbsp;&nbsp;<b>Peso:</b> ${atual.peso ? atual.peso+' Kg' : '—'}</span>
         <span style="white-space:nowrap"><b>Idade:</b> ${idade!==null ? idade : '—'}</span>
         <span style="white-space:nowrap"><b>Registro:</b> ${atual.registro||'—'}</span>
       </div>
