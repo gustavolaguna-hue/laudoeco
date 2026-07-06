@@ -61,6 +61,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .busca input{width:100%;padding:7px 9px 7px 29px;border:1px solid #e5e7eb;border-radius:7px;font-size:12.5px;font-family:inherit;outline:none;color:#0f172a}
 .busca input:focus{border-color:#e5e7eb}
 .busca input::placeholder{color:#94a3b8}
+.busca-clear{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:20px;height:20px;border:none;background:transparent;cursor:pointer;color:#94a3b8;display:none;border-radius:50%;font-size:16px;line-height:1;padding:0;align-items:center;justify-content:center}
+.busca-clear:hover{background:#f1f5f9;color:#0f172a}
+.busca.has-value .busca-clear{display:flex}
+
+/* ===== FILTROS (período + clínica) ===== */
+.fclin{display:flex;align-items:center;gap:6px}
+.fclin label{font-size:10.5px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em}
+.fclin select{border:1px solid #e5e7eb;border-radius:7px;padding:6px 8px;font-family:inherit;font-size:12px;color:#0f172a;background:#fff;outline:none;cursor:pointer;max-width:180px}
+.fin-filtros{display:flex;align-items:flex-end;gap:18px;margin-bottom:14px;flex-wrap:wrap;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px}
+.fin-grupo{display:flex;flex-direction:column;gap:5px}
+.fin-grupo label{font-size:10.5px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em}
+.fin-grupo input[type="date"]{padding:6px 9px;border:1px solid #e5e7eb;border-radius:7px;font-size:12.5px;font-family:inherit;outline:none;background:#fff;color:#0f172a}
+.fin-grupo input[type="date"]:focus{border-color:#0f172a}
+.fin-grupo select{border:1px solid #e5e7eb;border-radius:7px;padding:6.5px 9px;font-family:inherit;font-size:12.5px;color:#0f172a;background:#fff;outline:none;cursor:pointer;max-width:180px}
+.fin-periodo-btns{display:flex;gap:5px;flex-wrap:wrap}
+.fin-per-btn{padding:6px 11px;border-radius:7px;font-size:12px;font-weight:500;background:#fff;border:1px solid #e5e7eb;color:#475569;cursor:pointer;font-family:inherit;transition:all .12s}
+.fin-per-btn:hover,.fin-per-btn.ativo{background:#0f172a;color:#fff;border-color:#0f172a}
+.fin-nav-mes{display:flex;align-items:center;gap:5px}
+.fin-nav-arrow{width:29px;height:29px;border-radius:7px;border:1px solid #e5e7eb;background:#fff;color:#475569;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .12s;flex-shrink:0}
+.fin-nav-arrow:hover{background:#0f172a;color:#fff;border-color:#0f172a}
+.fin-nav-arrow:disabled{opacity:.35;cursor:default;pointer-events:none}
+.fin-nav-label{min-width:104px;text-align:center;font-size:12.5px;font-weight:600;color:#0f172a;background:#fff;border:1px solid #e5e7eb;border-radius:7px;padding:5.5px 10px;cursor:pointer;font-family:inherit;transition:all .12s}
+.fin-nav-label:hover{border-color:#0f172a}
+.busca.has-value ~ .fin-filtros .fin-grupo.per{opacity:.4;pointer-events:none}
 
 /* ===== LISTA ===== */
 .lista-wrap{background:white;border-radius:10px;overflow:hidden;border:1px solid #e8e8e8}
@@ -393,9 +417,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="stat"><div class="stat-lbl">Concluídos</div><div class="stat-val tx-ok" id="st_con">0</div></div>
       <div class="stat"><div class="stat-lbl">Este mês</div><div class="stat-val" id="st_mes">0</div></div>
     </div>
-    <div class="busca">
-      <svg class="busca-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" placeholder="Buscar paciente, registro…" oninput="filtrar(this.value)">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px">
+      <div class="busca" id="busca_inbox_wrap" style="flex:1;min-width:220px;margin-bottom:0">
+        <svg class="busca-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" id="busca_inbox" placeholder="Buscar paciente, registro…" oninput="onBusca('inbox',this.value)" onkeydown="onBuscaKey(event,'inbox')" autocomplete="off">
+        <button class="busca-clear" onclick="limparBusca('inbox')" title="Limpar busca (Esc)">×</button>
+      </div>
+      <div class="fclin">
+        <label>Clínica</label>
+        <select id="filtro_clinica_i" onchange="renderListas()"><option value="">Todas as clínicas</option></select>
+      </div>
     </div>
     <div class="lista-wrap">
       <div class="lista-hdr"><div></div><div>Paciente</div><div>Registro</div><div>Data</div><div>Status</div><div></div></div>
@@ -407,6 +438,47 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <!-- PG CONCLUÍDOS -->
   <div id="pg_conc" style="display:none">
     <div class="pg-hdr"><h1>Concluídos</h1></div>
+    <div class="busca" id="busca_conc_wrap">
+      <svg class="busca-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="search" id="busca_conc" placeholder="Buscar paciente, registro…" oninput="onBusca('conc',this.value)" onkeydown="onBuscaKey(event,'conc')" autocomplete="off">
+      <button class="busca-clear" onclick="limparBusca('conc')" title="Limpar busca (Esc)">×</button>
+    </div>
+    <div class="fin-filtros">
+      <div class="fin-grupo per">
+        <label>De</label>
+        <input type="date" id="conc_data_ini" onchange="concLimparAtivo();renderListas()">
+      </div>
+      <div class="fin-grupo per">
+        <label>Até</label>
+        <input type="date" id="conc_data_fim" onchange="concLimparAtivo();renderListas()">
+      </div>
+      <div class="fin-grupo per">
+        <label>Mês</label>
+        <div class="fin-nav-mes">
+          <button class="fin-nav-arrow" onclick="concNavMes(-1)" title="Mês anterior">&#8249;</button>
+          <button class="fin-nav-label" id="conc_nav_label" onclick="concSetMesAtual()" title="Mês atual">—</button>
+          <button class="fin-nav-arrow" id="conc_nav_proximo" onclick="concNavMes(1)" title="Próximo mês">&#8250;</button>
+        </div>
+      </div>
+      <div class="fin-grupo per">
+        <label>Período rápido</label>
+        <div class="fin-periodo-btns">
+          <button class="fin-per-btn" data-rapido="7" onclick="concSetPeriodo(7,this)">7 dias</button>
+          <button class="fin-per-btn" data-rapido="30" onclick="concSetPeriodo(30,this)">30 dias</button>
+          <button class="fin-per-btn" data-rapido="90" onclick="concSetPeriodo(90,this)">90 dias</button>
+          <button class="fin-per-btn" data-rapido="365" onclick="concSetPeriodo(365,this)">12 meses</button>
+          <button class="fin-per-btn ativo" data-rapido="0" onclick="concSetPeriodo(0,this)">Tudo</button>
+        </div>
+      </div>
+      <div class="fin-grupo">
+        <label>Clínica</label>
+        <select id="filtro_clinica_c" onchange="renderListas()"><option value="">Todas as clínicas</option></select>
+      </div>
+      <div class="fin-grupo" style="margin-left:auto">
+        <label>Resultados</label>
+        <span id="conc_resultado" style="font-size:13px;font-weight:600;color:#0f172a;padding:6px 0;white-space:nowrap">—</span>
+      </div>
+    </div>
     <div class="lista-wrap">
       <div class="lista-hdr"><div></div><div>Paciente</div><div>Registro</div><div>Data</div><div>Status</div><div></div></div>
       <div id="lista_conc"></div>
@@ -513,7 +585,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div class="sec">
           <div class="sec-ttl">PISA</div>
           <div class="m-row"><span class="m-lbl">VENA</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_pisa_vena" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mm</span></div>
-          <div class="m-row"><span class="m-lbl">RAIO</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_pisa_raio" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">cm</span></div>
+          <div class="m-row"><span class="m-lbl">RAIO</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_pisa_raio" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mm</span></div>
           <div class="m-row"><span class="m-lbl">VAL</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_pisa_val" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">cm/s</span></div>
           <div class="m-row"><span class="m-lbl">Vmax</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_pisa_vmax" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">m/s</span></div>
           <div class="m-row"><span class="m-lbl">VTI</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_pisa_vti" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">cm</span></div>
@@ -1501,10 +1573,11 @@ function calcular(){
   }
 
   // PISA — EROA, VR (Volume Regurgitante), FR (Fração Regurgitante)
-  { const raio  = g('m_pisa_raio');   // cm
+  { const raioMm = g('m_pisa_raio');  // mm
     const val   = g('m_pisa_val');    // cm/s  (velocidade de aliasing)
     const vmax  = g('m_pisa_vmax');   // m/s  (velocidade máxima do jato)
     const vti   = g('m_pisa_vti');    // cm
+    const raio  = raioMm !== null ? raioMm / 10 : null; // mm → cm
     if (raio !== null && val !== null && vmax !== null && vmax !== 0) {
       const eroa = 2 * Math.PI * raio * raio * val / (vmax * 100); // vmax→cm/s; resultado em cm²
       set('c_pisa_eroa', eroa.toFixed(2), ' cm²');
@@ -2508,11 +2581,126 @@ function exportarPDF(){
 // ============================================================
 // LISTAS
 // ============================================================
+// ── Estado dos filtros ──
+let _buscaQ    = { inbox:'', conc:'' };
+let _buscaTimer= { inbox:null, conc:null };
+let _concMesNav = null;
+const _MESES_LONGO = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+function _norm(s){
+  return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim();
+}
+function _matchBusca(e,q){
+  if(!q) return true;
+  return _norm(e.nome).includes(q) || _norm(e.registro).includes(q);
+}
+function _ymdLocal(iso){
+  const d=new Date(iso);
+  if(isNaN(d)) return null;
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+// Concluídos filtram pela data de conclusão (fallback: data do exame)
+function _dataConc(e){
+  return e.finalizado_em ? _ymdLocal(e.finalizado_em) : (e.data||null);
+}
+function _passaFiltro(e,pg){
+  const clin=(document.getElementById(pg==='inbox'?'filtro_clinica_i':'filtro_clinica_c')||{}).value||'';
+  if(clin && e.clinica_id!==clin) return false;
+  // Busca ativa passa por cima do filtro de período
+  if(_buscaQ[pg]) return _matchBusca(e,_buscaQ[pg]);
+  if(pg==='conc'){
+    const ini=(document.getElementById('conc_data_ini')||{}).value||'';
+    const fim=(document.getElementById('conc_data_fim')||{}).value||'';
+    if(ini||fim){
+      const ymd=_dataConc(e);
+      if(!ymd) return false;
+      if(ini && ymd<ini) return false;
+      if(fim && ymd>fim) return false;
+    }
+  }
+  return true;
+}
+
+// ── Filtro de período da página Concluídos (estilo Financeiro) ──
+function concSetPeriodo(dias,btn){
+  document.querySelectorAll('.fin-per-btn[data-rapido]').forEach(b=>b.classList.remove('ativo'));
+  if(btn) btn.classList.add('ativo');
+  _concMesNav=null;
+  const lbl=document.getElementById('conc_nav_label'); if(lbl) lbl.textContent='—';
+  const prox=document.getElementById('conc_nav_proximo'); if(prox) prox.disabled=false;
+  const ini=document.getElementById('conc_data_ini'), fim=document.getElementById('conc_data_fim');
+  if(dias===0){ ini.value=''; fim.value=''; }
+  else{
+    fim.value=hoje();
+    const d=new Date(); d.setDate(d.getDate()-dias+1);
+    ini.value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+  renderListas();
+}
+function _concAplicarMes(ano,mes){
+  const p=n=>String(n).padStart(2,'0');
+  document.getElementById('conc_data_ini').value=ano+'-'+p(mes)+'-01';
+  const ult=new Date(ano,mes,0).getDate();
+  document.getElementById('conc_data_fim').value=ano+'-'+p(mes)+'-'+p(ult);
+  _concMesNav={ano,mes};
+  document.getElementById('conc_nav_label').textContent=_MESES_LONGO[mes-1]+' '+ano;
+  const hj=new Date();
+  document.getElementById('conc_nav_proximo').disabled =
+    ano>hj.getFullYear() || (ano===hj.getFullYear() && mes>=hj.getMonth()+1);
+  document.querySelectorAll('.fin-per-btn[data-rapido]').forEach(b=>b.classList.remove('ativo'));
+  renderListas();
+}
+function concSetMesAtual(){ const h=new Date(); _concAplicarMes(h.getFullYear(),h.getMonth()+1); }
+function concNavMes(delta){
+  const h=new Date();
+  const b=_concMesNav||{ano:h.getFullYear(),mes:h.getMonth()+1};
+  let mes=b.mes+delta, ano=b.ano;
+  if(mes<1){mes=12;ano--;}
+  if(mes>12){mes=1;ano++;}
+  _concAplicarMes(ano,mes);
+}
+function concLimparAtivo(){
+  // Usuário editou as datas manualmente — limpa destaques de mês/período rápido
+  _concMesNav=null;
+  const lbl=document.getElementById('conc_nav_label'); if(lbl) lbl.textContent='—';
+  const prox=document.getElementById('conc_nav_proximo'); if(prox) prox.disabled=false;
+  document.querySelectorAll('.fin-per-btn[data-rapido]').forEach(b=>b.classList.remove('ativo'));
+}
+function onBusca(pg,valor){
+  document.getElementById(pg==='inbox'?'busca_inbox_wrap':'busca_conc_wrap').classList.toggle('has-value',!!valor.trim());
+  clearTimeout(_buscaTimer[pg]);
+  _buscaTimer[pg]=setTimeout(()=>{ _buscaQ[pg]=_norm(valor); renderListas(); },300);
+}
+function onBuscaKey(ev,pg){
+  if(ev.key==='Escape'){ ev.preventDefault(); limparBusca(pg); }
+}
+function limparBusca(pg){
+  const inp=document.getElementById(pg==='inbox'?'busca_inbox':'busca_conc');
+  inp.value='';
+  document.getElementById(pg==='inbox'?'busca_inbox_wrap':'busca_conc_wrap').classList.remove('has-value');
+  _buscaQ[pg]='';
+  renderListas();
+  inp.focus();
+}
+function popularFiltrosClinica(){
+  ['filtro_clinica_i','filtro_clinica_c'].forEach(id=>{
+    const sel=document.getElementById(id);
+    if(!sel) return;
+    const atual=sel.value;
+    sel.innerHTML='<option value="">Todas as clínicas</option>'+
+      clinicas.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+    if(atual && clinicas.some(c=>c.id===atual)) sel.value=atual;
+  });
+}
 function renderListas(){
+  popularFiltrosClinica();
   const pend=exames.filter(e=>e.status!=='concluido');
   const conc=exames.filter(e=>e.status==='concluido');
-  renderLista('lista_inbox',pend,'inbox_vz');
-  renderLista('lista_conc',conc,'conc_vz');
+  const concF=conc.filter(e=>_passaFiltro(e,'conc'));
+  renderLista('lista_inbox',pend.filter(e=>_passaFiltro(e,'inbox')),'inbox_vz');
+  renderLista('lista_conc',concF,'conc_vz');
+  const resEl=document.getElementById('conc_resultado');
+  if(resEl) resEl.textContent=concF.length+(concF.length===1?' exame':' exames');
   document.getElementById('sb_inbox').textContent=pend.length||'0';
   document.getElementById('sb_conc').textContent=conc.length||'0';
 }
@@ -2567,13 +2755,6 @@ function atualizarStats(){
   document.getElementById('st_con').textContent=con;
   document.getElementById('st_mes').textContent=dom;
 }
-function filtrar(t){
-  const f=t.toLowerCase().trim();
-  document.querySelectorAll('.lista-row').forEach(row=>{
-    row.style.display=!f||row.textContent.toLowerCase().includes(f)?'':'none';
-  });
-}
-
 // ============================================================
 // HELPERS
 // ============================================================
