@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Laudo ECO — Dr. Gustavo Laguna</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;color:#0f172a;-webkit-font-smoothing:antialiased;font-size:13px}
@@ -85,6 +86,51 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .fin-nav-label{min-width:104px;text-align:center;font-size:12.5px;font-weight:600;color:#0f172a;background:#fff;border:1px solid #e5e7eb;border-radius:7px;padding:5.5px 10px;cursor:pointer;font-family:inherit;transition:all .12s}
 .fin-nav-label:hover{border-color:#0f172a}
 .busca.has-value ~ .fin-filtros .fin-grupo.per{opacity:.4;pointer-events:none}
+
+/* ===== FINANCEIRO ===== */
+.fin-subtabs{display:flex;gap:0;border-bottom:2px solid #e2e8f0;margin-bottom:16px}
+.fin-subtab{padding:9px 18px;font-size:13px;font-weight:500;color:#94a3b8;background:transparent;border:none;cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .12s,border-color .12s;display:flex;align-items:center;gap:6px}
+.fin-subtab:hover{color:#475569}
+.fin-subtab.active{color:#0f172a;font-weight:600;border-bottom-color:#0f172a}
+.fin-charts-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:900px){.fin-charts-row{grid-template-columns:1fr}}
+.fin-chart-box{background:#fff;border:1px solid #e8e8e8;border-radius:10px;padding:16px}
+.fin-chart-titulo{font-size:13px;font-weight:600;color:#0f172a;margin-bottom:12px}
+.fin-chart-wrap{position:relative;height:210px}
+.fin-rclin-wrap{display:flex;gap:18px;align-items:flex-start;min-height:210px}
+.fin-rclin-donut-area{position:relative;width:170px;height:170px;flex-shrink:0;align-self:center}
+.fin-rclin-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;width:104px}
+.fin-rclin-center-label{font-size:9.5px;color:#94a3b8;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.fin-rclin-center-valor{font-size:11.5px;font-weight:700;color:#0f172a;line-height:1.3;word-break:break-all}
+.fin-rclin-lista{flex:1;overflow-y:visible;padding-right:2px}
+.fin-rclin-item{display:flex;align-items:center;padding:6px 0;border-bottom:1px solid #f1f5f9;gap:9px}
+.fin-rclin-item:last-child{border-bottom:none}
+.fin-rclin-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.fin-rclin-info{flex:1;min-width:0}
+.fin-rclin-nome{font-size:12px;font-weight:600;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fin-rclin-sub{font-size:9.5px;color:#94a3b8;margin-top:1px}
+.fin-rclin-vals{text-align:right;flex-shrink:0}
+.fin-rclin-valor{font-size:12px;font-weight:600;color:#0f172a;white-space:nowrap}
+.fin-rclin-pct{font-size:9.5px;color:#94a3b8;margin-top:1px}
+.rel-table-wrap{overflow-x:auto;border-radius:10px;border:1px solid #e8e8e8}
+.rel-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.rel-table th{background:#f8fafc;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;padding:9px 12px;text-align:left;border-bottom:1px solid #e5e7eb;white-space:nowrap}
+.rel-table td{padding:9px 12px;border-bottom:1px solid #f1f5f9;color:#374151;vertical-align:middle}
+.rel-table tr:last-child td{border-bottom:none}
+.rel-table tr:hover td{background:#fafafa}
+.rel-table .rel-td-num{font-variant-numeric:tabular-nums;text-align:right}
+.rel-table tfoot td{font-weight:700;color:#0f172a;background:#f8fafc;border-top:2px solid #e5e7eb}
+.rel-clinica-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;flex-shrink:0}
+.rel-export-bar{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.rel-td-valor{cursor:pointer;white-space:nowrap;user-select:none}
+.rel-td-valor:hover{background:#f8fafc}
+.rel-td-valor.editando{cursor:default}
+.rel-val-edit-ico{margin-left:6px;opacity:0;color:#94a3b8;vertical-align:middle;transition:opacity .12s}
+.rel-td-valor:hover .rel-val-edit-ico{opacity:1}
+.rel-val-input{width:88px;padding:4px 6px;border:1.5px solid #1a3a5c;border-radius:6px;font-size:12.5px;font-family:inherit;text-align:right;outline:none}
+.rel-val-tag{margin-left:7px;font-size:9px;font-weight:600;color:#b45309;background:#fef3c7;padding:1.5px 6px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em;vertical-align:middle;white-space:nowrap}
+.rel-val-reset{margin-left:4px;border:none;background:transparent;color:#94a3b8;cursor:pointer;font-size:13px;padding:0 2px;vertical-align:middle;line-height:1;font-family:inherit}
+.rel-val-reset:hover{color:#0f172a}
 
 /* ===== LISTA ===== */
 .lista-wrap{background:white;border-radius:10px;overflow:hidden;border:1px solid #e8e8e8}
@@ -379,6 +425,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       <span class="nav-lbl">Clínicas</span>
     </button>
+    <button class="nav-item" data-pg="financeiro" onclick="setPage('financeiro')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <span class="nav-lbl">Financeiro</span>
+    </button>
     <button class="nav-item" data-pg="tabelas" onclick="setPage('tabelas')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
       <span class="nav-lbl">Tabelas</span>
@@ -463,6 +513,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="fin-grupo per">
         <label>Período rápido</label>
         <div class="fin-periodo-btns">
+          <button class="fin-per-btn" data-rapido="1" onclick="concSetPeriodo(1,this)">Hoje</button>
           <button class="fin-per-btn" data-rapido="7" onclick="concSetPeriodo(7,this)">7 dias</button>
           <button class="fin-per-btn" data-rapido="30" onclick="concSetPeriodo(30,this)">30 dias</button>
           <button class="fin-per-btn" data-rapido="90" onclick="concSetPeriodo(90,this)">90 dias</button>
@@ -508,6 +559,200 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
     <div class="cl-list" id="cl_grid"></div>
   </div>
+
+  <!-- PG FINANCEIRO -->
+  <div id="pg_financeiro" style="display:none">
+    <div class="pg-hdr"><h1>Financeiro</h1></div>
+
+    <div class="fin-subtabs">
+      <button class="fin-subtab active" id="fin_subtab_btn_visaogeral" onclick="finMostrarSubtab('visaogeral')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Visão Geral
+      </button>
+      <button class="fin-subtab" id="fin_subtab_btn_relatorios" onclick="finMostrarSubtab('relatorios')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Relatórios
+      </button>
+    </div>
+
+    <!-- Sub-tab: Visão Geral -->
+    <div id="fin_subtab_visaogeral">
+
+      <div class="stats" id="fin_cards">
+        <div class="stat"><div class="stat-lbl">Total de exames</div><div class="stat-val" id="fin_total_exames">—</div></div>
+        <div class="stat"><div class="stat-lbl">Receita total</div><div class="stat-val tx-ok" id="fin_total_receita">—</div></div>
+        <div class="stat"><div class="stat-lbl">Ticket médio</div><div class="stat-val" id="fin_ticket_medio">—</div></div>
+        <div class="stat"><div class="stat-lbl">Clínicas ativas</div><div class="stat-val" id="fin_clinicas_ativas">—</div></div>
+      </div>
+
+      <div class="fin-filtros">
+        <div class="fin-grupo per">
+          <label>De</label>
+          <input type="date" id="fin_data_ini" onchange="finLimparAtivo();carregarFinanceiro()">
+        </div>
+        <div class="fin-grupo per">
+          <label>Até</label>
+          <input type="date" id="fin_data_fim" onchange="finLimparAtivo();carregarFinanceiro()">
+        </div>
+        <div class="fin-grupo per">
+          <label>Mês</label>
+          <div class="fin-nav-mes">
+            <button class="fin-nav-arrow" onclick="finNavMes(-1)" title="Mês anterior">&#8249;</button>
+            <button class="fin-nav-label" id="fin_nav_label" onclick="finSetMesAtual()" title="Mês atual">—</button>
+            <button class="fin-nav-arrow" id="fin_nav_proximo" onclick="finNavMes(1)" title="Próximo mês">&#8250;</button>
+          </div>
+        </div>
+        <div class="fin-grupo per">
+          <label>Período rápido</label>
+          <div class="fin-periodo-btns">
+            <button class="fin-per-btn" data-rapido="1" onclick="finSetPeriodo(1,this)">Hoje</button>
+            <button class="fin-per-btn" data-rapido="7" onclick="finSetPeriodo(7,this)">7 dias</button>
+            <button class="fin-per-btn" data-rapido="30" onclick="finSetPeriodo(30,this)">30 dias</button>
+            <button class="fin-per-btn" data-rapido="90" onclick="finSetPeriodo(90,this)">90 dias</button>
+            <button class="fin-per-btn" data-rapido="365" onclick="finSetPeriodo(365,this)">12 meses</button>
+            <button class="fin-per-btn ativo" data-rapido="0" onclick="finSetPeriodo(0,this)">Tudo</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="fin-charts-row">
+        <div class="fin-chart-box" style="grid-column:1/-1;padding-bottom:0">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px">
+            <span style="font-size:13px;font-weight:600;color:#0f172a">Evolução temporal</span>
+            <div class="fin-periodo-btns" id="fin_agrup_btns">
+              <button class="fin-per-btn ativo" data-agrup="dia" onclick="finSetAgrupamento('dia')">Por dia</button>
+              <button class="fin-per-btn" data-agrup="semana" onclick="finSetAgrupamento('semana')">Por semana</button>
+              <button class="fin-per-btn" data-agrup="mes" onclick="finSetAgrupamento('mes')">Por mês</button>
+              <button class="fin-per-btn" data-agrup="ano" onclick="finSetAgrupamento('ano')">Por ano</button>
+            </div>
+          </div>
+        </div>
+        <div class="fin-chart-box">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div class="fin-chart-titulo" style="margin-bottom:0">Exames por período</div>
+            <div style="display:flex;gap:4px">
+              <button id="btn_exames_total" class="fin-per-btn ativo" onclick="finSetExamesModo('total')" title="Exibir total">Total</button>
+              <button id="btn_exames_clinica" class="fin-per-btn" onclick="finSetExamesModo('clinica')" title="Dividir por clínica">Por clínica</button>
+            </div>
+          </div>
+          <div class="fin-chart-wrap"><canvas id="chart_exames_periodo"></canvas></div>
+        </div>
+        <div class="fin-chart-box">
+          <div class="fin-chart-titulo">Receita por período</div>
+          <div class="fin-chart-wrap"><canvas id="chart_receita_periodo"></canvas></div>
+        </div>
+      </div>
+
+      <div class="fin-charts-row">
+        <div class="fin-chart-box">
+          <div class="fin-chart-titulo">Exames por clínica</div>
+          <div class="fin-rclin-wrap">
+            <div class="fin-rclin-donut-area">
+              <canvas id="chart_exames_clinica"></canvas>
+              <div class="fin-rclin-center">
+                <div class="fin-rclin-center-label">Total</div>
+                <div id="fin_eclin_total" class="fin-rclin-center-valor">—</div>
+              </div>
+            </div>
+            <div id="fin_eclin_lista" class="fin-rclin-lista"></div>
+          </div>
+        </div>
+        <div class="fin-chart-box">
+          <div class="fin-chart-titulo">Receita por clínica</div>
+          <div class="fin-rclin-wrap">
+            <div class="fin-rclin-donut-area">
+              <canvas id="chart_receita_clinica"></canvas>
+              <div class="fin-rclin-center">
+                <div class="fin-rclin-center-label">Total</div>
+                <div id="fin_rclin_total" class="fin-rclin-center-valor">—</div>
+              </div>
+            </div>
+            <div id="fin_rclin_lista" class="fin-rclin-lista"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="fin_sem_dados" style="display:none;text-align:center;color:#94a3b8;padding:40px 0;font-size:14px">
+        Nenhum exame concluído no período selecionado.
+      </div>
+
+    </div><!-- /fin_subtab_visaogeral -->
+
+    <!-- Sub-tab: Relatórios -->
+    <div id="fin_subtab_relatorios" style="display:none">
+
+      <div class="fin-filtros">
+        <div class="fin-grupo">
+          <label>Clínica</label>
+          <select id="rel_clinica"><option value="">Todas as clínicas</option></select>
+        </div>
+        <div class="fin-grupo per">
+          <label>De</label>
+          <input type="date" id="rel_data_ini" onchange="relLimparAtivo()">
+        </div>
+        <div class="fin-grupo per">
+          <label>Até</label>
+          <input type="date" id="rel_data_fim" onchange="relLimparAtivo()">
+        </div>
+        <div class="fin-grupo per">
+          <label>Período rápido</label>
+          <div class="fin-periodo-btns">
+            <button class="fin-per-btn" onclick="relSetMes(0,this)">Mês atual</button>
+            <button class="fin-per-btn" onclick="relSetMes(-1,this)">Mês anterior</button>
+            <button class="fin-per-btn" onclick="relSetDias(30,this)">30 dias</button>
+            <button class="fin-per-btn" onclick="relSetDias(90,this)">90 dias</button>
+            <button class="fin-per-btn" onclick="relSetDias(0,this)">Tudo</button>
+          </div>
+        </div>
+        <div class="fin-grupo" style="margin-left:auto">
+          <label>&nbsp;</label>
+          <button class="btn btn-pri" onclick="gerarRelatorio()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Gerar Relatório
+          </button>
+        </div>
+      </div>
+
+      <div id="rel_loading" style="display:none;text-align:center;color:#94a3b8;padding:40px 0;font-size:14px">Carregando relatório…</div>
+      <div id="rel_empty" style="display:none;text-align:center;color:#94a3b8;padding:40px 0;font-size:14px">Nenhum exame encontrado no período e clínica selecionados.</div>
+      <div id="rel_inicial" style="text-align:center;color:#94a3b8;padding:40px 0;font-size:14px">Selecione a clínica e o período desejado e clique em <strong>Gerar Relatório</strong>.</div>
+
+      <div id="rel_resultado" style="display:none">
+        <div class="stats" id="rel_cards" style="margin-bottom:14px">
+          <div class="stat"><div class="stat-lbl">Total de exames</div><div class="stat-val" id="rel_tot_exames">—</div></div>
+          <div class="stat"><div class="stat-lbl">Receita total</div><div class="stat-val tx-ok" id="rel_tot_receita">—</div></div>
+          <div class="stat"><div class="stat-lbl">Ticket médio</div><div class="stat-val" id="rel_ticket">—</div></div>
+          <div class="stat"><div class="stat-lbl">Clínicas</div><div class="stat-val" id="rel_n_clinicas">—</div></div>
+        </div>
+
+        <div class="rel-table-wrap">
+          <table class="rel-table" id="rel_table">
+            <thead>
+              <tr>
+                <th style="width:36px">#</th>
+                <th>Clínica</th>
+                <th>Paciente</th>
+                <th>Registro</th>
+                <th>Data Exame</th>
+                <th style="text-align:right">Valor</th>
+              </tr>
+            </thead>
+            <tbody id="rel_tbody"></tbody>
+            <tfoot id="rel_tfoot"></tfoot>
+          </table>
+        </div>
+
+        <div class="rel-export-bar">
+          <button class="btn-ghost" onclick="relImprimir()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Imprimir / Exportar PDF
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /fin_subtab_relatorios -->
+
+  </div><!-- /pg_financeiro -->
 
   <!-- PG ANÁLISE -->
   <div id="pg_an" style="display:none">
@@ -1006,6 +1251,7 @@ let pgAtual  = 'inbox';
 let emAnalise = false;
 let _userId  = null;
 let _clinicaEditandoId = null;
+let _dadosCarregados = false;
 
 // ============================================================
 // INIT
@@ -1075,16 +1321,25 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     if (session?.user) {
-      _userId = session.user.id;
       document.getElementById('login_overlay').style.display = 'none';
+      // O Supabase re-dispara SIGNED_IN toda vez que a aba volta a ficar em foco
+      // (não só no login de fato). Se recarregássemos tudo nesses casos, uma
+      // recarga concorrente podia pegar dados desatualizados (ex: logo após
+      // "Concluir laudo") e sobrescrever a lista já atualizada na tela,
+      // fazendo o exame "voltar" a aparecer como pendente até um F5.
+      // Por isso só fazemos a carga completa uma vez por sessão de usuário.
+      if (_userId === session.user.id && _dadosCarregados) return;
+      _userId = session.user.id;
       await carregarTabelas();
       await carregarClinicas();
       await carregarExames();
+      _dadosCarregados = true;
       setDataInput('n_data', hoje());
       renderListas();
       atualizarStats();
     } else {
       _userId = null;
+      _dadosCarregados = false;
       document.getElementById('login_overlay').style.display = 'flex';
     }
   });
@@ -2112,7 +2367,7 @@ function setPage(pg){
   pgAtual=pg;
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.pg===pg));
 
-  const allPgs = ['pg_inbox','pg_conc','pg_tabelas','pg_clinicas','pg_an'];
+  const allPgs = ['pg_inbox','pg_conc','pg_tabelas','pg_clinicas','pg_financeiro','pg_an'];
   allPgs.forEach(id => document.getElementById(id).style.display='none');
 
   if (pg === 'tabelas') {
@@ -2121,6 +2376,9 @@ function setPage(pg){
   } else if (pg === 'clinicas') {
     document.getElementById('pg_clinicas').style.display='';
     renderClinicas();
+  } else if (pg === 'financeiro') {
+    document.getElementById('pg_financeiro').style.display='';
+    initFinanceiro();
   } else if (emAnalise) {
     document.getElementById('pg_an').style.display='';
   } else {
@@ -2623,7 +2881,7 @@ function _passaFiltro(e,pg){
 
 // ── Filtro de período da página Concluídos (estilo Financeiro) ──
 function concSetPeriodo(dias,btn){
-  document.querySelectorAll('.fin-per-btn[data-rapido]').forEach(b=>b.classList.remove('ativo'));
+  document.querySelectorAll('#pg_conc .fin-per-btn[data-rapido]').forEach(b=>b.classList.remove('ativo'));
   if(btn) btn.classList.add('ativo');
   _concMesNav=null;
   const lbl=document.getElementById('conc_nav_label'); if(lbl) lbl.textContent='—';
@@ -2647,7 +2905,7 @@ function _concAplicarMes(ano,mes){
   const hj=new Date();
   document.getElementById('conc_nav_proximo').disabled =
     ano>hj.getFullYear() || (ano===hj.getFullYear() && mes>=hj.getMonth()+1);
-  document.querySelectorAll('.fin-per-btn[data-rapido]').forEach(b=>b.classList.remove('ativo'));
+  document.querySelectorAll('#pg_conc .fin-per-btn[data-rapido]').forEach(b=>b.classList.remove('ativo'));
   renderListas();
 }
 function concSetMesAtual(){ const h=new Date(); _concAplicarMes(h.getFullYear(),h.getMonth()+1); }
@@ -2664,8 +2922,680 @@ function concLimparAtivo(){
   _concMesNav=null;
   const lbl=document.getElementById('conc_nav_label'); if(lbl) lbl.textContent='—';
   const prox=document.getElementById('conc_nav_proximo'); if(prox) prox.disabled=false;
-  document.querySelectorAll('.fin-per-btn[data-rapido]').forEach(b=>b.classList.remove('ativo'));
+  document.querySelectorAll('#pg_conc .fin-per-btn[data-rapido]').forEach(b=>b.classList.remove('ativo'));
 }
+
+// ============================================================
+// FINANCEIRO (client-side, a partir de `exames` + `clinicas` já carregados)
+// ============================================================
+let _finCharts = {};
+let _finAgrupamento = 'dia';   // 'dia' | 'semana' | 'mes' | 'ano'
+let _finDadosAtual = null;
+let _finMesNav = null;
+let _finExamesModo = 'total';  // 'total' | 'clinica'
+let _finIniciado = false;
+let _finAvisoChartMostrado = false;
+let _relDadosAtual = [];
+const _MESES_CURTO = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const _DIAS_SEMANA = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+function _fmt_brl(v){
+  return 'R$ ' + (v||0).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function _finClinicaInfo(id){
+  return clinicas.find(c=>c.id===id) || {};
+}
+// Valor efetivo do exame: usa override individual (valor_exame) se definido,
+// senão cai no valor padrão (valor_particular) cadastrado na clínica.
+function _valorExame(e){
+  if(e.valor_exame!=null && e.valor_exame!=='' && !isNaN(e.valor_exame)) return Number(e.valor_exame);
+  return _finClinicaInfo(e.clinica_id).valor_particular || 0;
+}
+
+// ── Agregação (equivalente a get_financeiro_data do LaudoMAPA, porém client-side) ──
+function calcularFinanceiro(ini, fim){
+  const porDiaMap = {}, porDiaClinMap = {}, porClinMap = {};
+  exames.filter(e=>e.status==='concluido').forEach(e=>{
+    const dia = _dataConc(e);
+    if(!dia) return;
+    if(ini && dia<ini) return;
+    if(fim && dia>fim) return;
+    const c = _finClinicaInfo(e.clinica_id);
+    const valor = _valorExame(e);
+
+    if(!porDiaMap[dia]) porDiaMap[dia] = {exames:0, receita:0};
+    porDiaMap[dia].exames++;
+    porDiaMap[dia].receita += valor;
+
+    const kdc = dia+'|'+(e.clinica_id||'');
+    if(!porDiaClinMap[kdc]) porDiaClinMap[kdc] = {data:dia, chave:e.clinica_id||'', nome:c.nome||'Sem clínica', cor:c.cor||'#64748b', exames:0, receita:0};
+    porDiaClinMap[kdc].exames++;
+    porDiaClinMap[kdc].receita += valor;
+
+    const kc = e.clinica_id || '';
+    if(!porClinMap[kc]) porClinMap[kc] = {chave:kc, nome:c.nome||'Sem clínica', cor:c.cor||'#64748b', valor_por_exame:(c.valor_particular||0), exames:0, receita:0};
+    porClinMap[kc].exames++;
+    porClinMap[kc].receita += valor;
+  });
+  const por_dia = Object.keys(porDiaMap).sort().map(k=>({data:k, exames:porDiaMap[k].exames, receita:porDiaMap[k].receita}));
+  const por_dia_clinica = Object.values(porDiaClinMap).sort((a,b)=> a.data===b.data ? b.exames-a.exames : (a.data<b.data?-1:1));
+  const por_clinica = Object.values(porClinMap).sort((a,b)=>b.receita-a.receita);
+  const totais = {
+    exames: por_clinica.reduce((s,c)=>s+c.exames,0),
+    receita: por_clinica.reduce((s,c)=>s+c.receita,0),
+  };
+  return { por_dia, por_dia_clinica, por_clinica, totais };
+}
+
+// ── Lista detalhada (equivalente a get_relatorio_exames) ──
+function listarExamesRelatorio(clinicaId, ini, fim){
+  return exames.filter(e=>e.status==='concluido')
+    .filter(e=> !clinicaId || e.clinica_id===clinicaId)
+    .map(e=>{
+      const dia = _dataConc(e);
+      const c = _finClinicaInfo(e.clinica_id);
+      const padrao = c.valor_particular || 0;
+      const personalizado = e.valor_exame!=null && e.valor_exame!=='' && !isNaN(e.valor_exame);
+      return {
+        id: e.id,
+        dia,
+        id_exame: e.registro || '—',
+        nome_clinica: c.nome || 'Sem clínica',
+        cor: c.cor || '#64748b',
+        nome_paciente: e.nome || '—',
+        data_exame: dia ? dia.split('-').reverse().join('/') : '—',
+        valor_por_exame: personalizado ? Number(e.valor_exame) : padrao,
+        valor_padrao: padrao,
+        valor_personalizado: personalizado,
+      };
+    })
+    .filter(r => (!ini || (r.dia && r.dia>=ini)) && (!fim || (r.dia && r.dia<=fim)))
+    .sort((a,b)=> (b.dia||'').localeCompare(a.dia||''));
+}
+
+function _finAgrupar(porDia, agrup){
+  const buckets = {}; const keys = [];
+  porDia.forEach(r=>{
+    const p = r.data.split('-');
+    let key;
+    if(agrup==='ano') key = p[0];
+    else if(agrup==='mes') key = p[0]+'-'+p[1];
+    else if(agrup==='semana'){
+      const d = new Date(r.data+'T12:00:00');
+      const dow = d.getDay()||7;
+      d.setDate(d.getDate()-dow+1);
+      key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    } else key = r.data;
+    if(!buckets[key]){ buckets[key]={exames:0,receita:0}; keys.push(key); }
+    buckets[key].exames += r.exames;
+    buckets[key].receita += r.receita;
+  });
+  keys.sort();
+  const labels = keys.map(k=>{
+    if(agrup==='ano') return k;
+    if(agrup==='mes'){ const p=k.split('-'); return _MESES_CURTO[parseInt(p[1],10)-1]+'/'+p[0].slice(2); }
+    const p=k.split('-'); return p[2]+'/'+p[1];
+  });
+  return { labels, exames: keys.map(k=>buckets[k].exames), receita: keys.map(k=>buckets[k].receita) };
+}
+
+// ── Filtros: período rápido / navegação de mês (Visão Geral) ──
+function finSetPeriodo(dias,btn){
+  document.querySelectorAll('#fin_subtab_visaogeral .fin-per-btn[data-rapido]').forEach(b=>b.classList.remove('ativo'));
+  if(btn) btn.classList.add('ativo');
+  _finMesNav=null;
+  const lbl=document.getElementById('fin_nav_label'); if(lbl) lbl.textContent='—';
+  const prox=document.getElementById('fin_nav_proximo'); if(prox) prox.disabled=false;
+  const ini=document.getElementById('fin_data_ini'), fim=document.getElementById('fin_data_fim');
+  if(dias===0){ ini.value=''; fim.value=''; }
+  else{
+    fim.value=hoje();
+    const d=new Date(); d.setDate(d.getDate()-dias+1);
+    ini.value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+  carregarFinanceiro();
+}
+function _finAplicarMes(ano,mes){
+  const p=n=>String(n).padStart(2,'0');
+  document.getElementById('fin_data_ini').value=ano+'-'+p(mes)+'-01';
+  const ult=new Date(ano,mes,0).getDate();
+  document.getElementById('fin_data_fim').value=ano+'-'+p(mes)+'-'+p(ult);
+  _finMesNav={ano,mes};
+  document.getElementById('fin_nav_label').textContent=_MESES_LONGO[mes-1]+' '+ano;
+  const hj=new Date();
+  document.getElementById('fin_nav_proximo').disabled =
+    ano>hj.getFullYear() || (ano===hj.getFullYear() && mes>=hj.getMonth()+1);
+  document.querySelectorAll('#fin_subtab_visaogeral .fin-per-btn[data-rapido]').forEach(b=>b.classList.remove('ativo'));
+  carregarFinanceiro();
+}
+function finSetMesAtual(){ const h=new Date(); _finAplicarMes(h.getFullYear(),h.getMonth()+1); }
+function finNavMes(delta){
+  const h=new Date();
+  const b=_finMesNav||{ano:h.getFullYear(),mes:h.getMonth()+1};
+  let mes=b.mes+delta, ano=b.ano;
+  if(mes<1){mes=12;ano--;}
+  if(mes>12){mes=1;ano++;}
+  _finAplicarMes(ano,mes);
+}
+function finLimparAtivo(){
+  _finMesNav=null;
+  const lbl=document.getElementById('fin_nav_label'); if(lbl) lbl.textContent='—';
+  const prox=document.getElementById('fin_nav_proximo'); if(prox) prox.disabled=false;
+  document.querySelectorAll('#fin_subtab_visaogeral .fin-per-btn[data-rapido]').forEach(b=>b.classList.remove('ativo'));
+}
+function finSetAgrupamento(agrup){
+  _finAgrupamento = agrup;
+  document.querySelectorAll('#fin_agrup_btns .fin-per-btn').forEach(b=>b.classList.toggle('ativo', b.dataset.agrup===agrup));
+  if(_finDadosAtual) _renderChartsTemporais(_finDadosAtual.por_dia||[]);
+}
+function finSetExamesModo(modo){
+  _finExamesModo = modo;
+  document.getElementById('btn_exames_total').classList.toggle('ativo', modo==='total');
+  document.getElementById('btn_exames_clinica').classList.toggle('ativo', modo==='clinica');
+  if(_finDadosAtual) _renderChartsTemporais(_finDadosAtual.por_dia||[]);
+}
+
+function carregarFinanceiro(){
+  const ini=(document.getElementById('fin_data_ini')||{}).value||'';
+  const fim=(document.getElementById('fin_data_fim')||{}).value||'';
+  _renderFinanceiro(calcularFinanceiro(ini, fim));
+}
+
+function _finDestruirChart(id){
+  if(_finCharts[id]){ try{ _finCharts[id].destroy(); }catch(e){} delete _finCharts[id]; }
+  const canvas=document.getElementById(id);
+  if(canvas && typeof Chart!=='undefined' && Chart.getChart){
+    const existing=Chart.getChart(canvas);
+    if(existing){ try{ existing.destroy(); }catch(e){} }
+  }
+}
+function _finChart(id, cfg){
+  if(typeof Chart==='undefined'){
+    console.warn('Chart.js não carregou — gráficos indisponíveis.');
+    if(!_finAvisoChartMostrado){
+      _finAvisoChartMostrado = true;
+      toast('Não foi possível carregar a biblioteca de gráficos (Chart.js). Verifique sua conexão e recarregue a página.', 'warn');
+    }
+    return;
+  }
+  _finDestruirChart(id);
+  const canvas=document.getElementById(id);
+  if(!canvas) return;
+  try{ _finCharts[id] = new Chart(canvas, cfg); }
+  catch(e){ console.warn('Chart.js falhou para '+id, e); }
+}
+
+function _renderChartsTemporais(porDia){
+  const porDiaClinica = (_finDadosAtual && _finDadosAtual.por_dia_clinica) || [];
+  const bucketClinica = {};
+  const bucketDiaSemana = {};
+  porDiaClinica.forEach(r=>{
+    const p = r.data.split('-');
+    let key;
+    if(_finAgrupamento==='ano') key = p[0];
+    else if(_finAgrupamento==='mes') key = _MESES_CURTO[parseInt(p[1],10)-1]+'/'+p[0].slice(2);
+    else if(_finAgrupamento==='semana'){
+      const d = new Date(r.data+'T12:00:00'); const dow=d.getDay()||7; d.setDate(d.getDate()-dow+1);
+      key = String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0');
+      if(!bucketDiaSemana[key]) bucketDiaSemana[key] = 'Semana de '+_DIAS_SEMANA[d.getDay()];
+    } else {
+      const dd = new Date(r.data+'T12:00:00');
+      key = p[2]+'/'+p[1];
+      if(!bucketDiaSemana[key]) bucketDiaSemana[key] = _DIAS_SEMANA[dd.getDay()];
+    }
+    if(!bucketClinica[key]) bucketClinica[key]=[];
+    const entry = bucketClinica[key].find(e=>e.chave===r.chave);
+    if(entry){ entry.exames+=r.exames; entry.receita+=r.receita; }
+    else bucketClinica[key].push({chave:r.chave, nome:r.nome, cor:r.cor, exames:r.exames, receita:r.receita});
+  });
+
+  const agrupado = _finAgrupar(porDia, _finAgrupamento);
+  const labels = agrupado.labels, examesSerie = agrupado.exames, receitaSerie = agrupado.receita;
+  const gridColor = 'rgba(0,0,0,0.05)';
+  const baseOpts = () => ({
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{color:gridColor}, ticks:{font:{size:11}}},
+      y:{grid:{color:gridColor}, ticks:{font:{size:11}}, beginAtZero:true}
+    }
+  });
+
+  const _tooltipExterno = (tooltipId, chaveValor, fmt) => (context) => {
+    let tooltipEl = document.getElementById(tooltipId);
+    if(!tooltipEl){
+      tooltipEl = document.createElement('div');
+      tooltipEl.id = tooltipId;
+      tooltipEl.style.cssText = 'position:absolute;pointer-events:none;background:#1e293b;color:#f1f5f9;border-radius:8px;padding:10px 13px;font-size:12px;line-height:1.6;box-shadow:0 4px 16px rgba(0,0,0,0.18);z-index:999;min-width:160px;transition:opacity .15s';
+      document.body.appendChild(tooltipEl);
+    }
+    const tooltip = context.tooltip;
+    if(tooltip.opacity===0){ tooltipEl.style.opacity='0'; return; }
+    const label = tooltip.dataPoints && tooltip.dataPoints[0] && tooltip.dataPoints[0].label;
+    const total = tooltip.dataPoints && tooltip.dataPoints[0] && tooltip.dataPoints[0].parsed.y;
+    const clinicasT = (bucketClinica[label]||[]).slice().sort((a,b)=>b[chaveValor]-a[chaveValor]);
+    const diaSem = bucketDiaSemana[label];
+    const headerLabel = diaSem ? '<span style="color:#cbd5e1;font-weight:500">'+diaSem+'</span> · '+label : label;
+    let html = '<div style="font-weight:600;color:#94a3b8;font-size:10px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">'+headerLabel+'</div>';
+    clinicasT.forEach(c=>{
+      html += '<div style="display:flex;align-items:center;gap:7px;padding:1px 0">'
+        + '<span style="width:10px;height:10px;border-radius:2px;background:'+c.cor+';flex-shrink:0;display:inline-block"></span>'
+        + '<span style="flex:1">'+c.nome+'</span>'
+        + '<span style="font-weight:600;margin-left:12px">'+fmt(c[chaveValor])+'</span>'
+        + '</div>';
+    });
+    if(clinicasT.length>1){
+      html += '<div style="border-top:1px solid rgba(255,255,255,0.1);margin-top:6px;padding-top:5px;display:flex;justify-content:space-between;color:#94a3b8">'
+        + '<span>Total</span><span style="font-weight:600;color:#f1f5f9">'+fmt(total)+'</span></div>';
+    }
+    tooltipEl.innerHTML = html;
+    const canvas = context.chart.canvas;
+    const rect = canvas.getBoundingClientRect();
+    const x = rect.left + window.scrollX + tooltip.caretX;
+    const y = rect.top + window.scrollY + tooltip.caretY;
+    tooltipEl.style.opacity='1';
+    tooltipEl.style.left=(x+12)+'px';
+    tooltipEl.style.top=(y-tooltipEl.offsetHeight/2)+'px';
+  };
+
+  const examesOpts = baseOpts();
+  examesOpts.plugins.tooltip = { enabled:false, external:_tooltipExterno('fin_tooltip_exames','exames', v=>String(v)) };
+
+  if(_finExamesModo==='clinica'){
+    const clinicasUnicas = [];
+    const clinicaIdx = {};
+    porDiaClinica.forEach(r=>{
+      if(!clinicaIdx[r.chave]){ clinicaIdx[r.chave]=true; clinicasUnicas.push({chave:r.chave, nome:r.nome, cor:r.cor||'#64748b'}); }
+    });
+    clinicasUnicas.sort((a,b)=>a.nome.localeCompare(b.nome));
+
+    const stackedDatasets = clinicasUnicas.map(clin=>({
+      label: clin.nome,
+      data: labels.map(lbl=>{
+        const bucket = bucketClinica[lbl]||[];
+        const entry = bucket.find(e=>e.chave===clin.chave);
+        return entry ? entry.exames : 0;
+      }),
+      backgroundColor: clin.cor,
+      borderRadius: 0,
+      borderSkipped: false,
+      stack: 'exames',
+    }));
+
+    const examesOptsStacked = baseOpts();
+    examesOptsStacked.plugins.legend = {display:true, position:'bottom', labels:{boxWidth:12, font:{size:11}, padding:10}};
+    examesOptsStacked.scales.x.stacked = true;
+    examesOptsStacked.scales.y.stacked = true;
+    examesOptsStacked.plugins.tooltip = examesOpts.plugins.tooltip;
+
+    _finChart('chart_exames_periodo', { type:'bar', data:{labels, datasets:stackedDatasets}, options:examesOptsStacked });
+  } else {
+    _finChart('chart_exames_periodo', {
+      type:'bar',
+      data:{ labels, datasets:[{ data:examesSerie, backgroundColor:'#1a3a5c', borderRadius:4, borderSkipped:false }] },
+      options: examesOpts
+    });
+  }
+
+  const recOpts = baseOpts();
+  recOpts.scales.y.ticks.callback = (v)=> 'R$'+v.toLocaleString('pt-BR');
+  recOpts.plugins.tooltip = { enabled:false, external:_tooltipExterno('fin_tooltip_receita','receita', v=>_fmt_brl(v)) };
+  _finChart('chart_receita_periodo', {
+    type:'line',
+    data:{ labels, datasets:[{ data:receitaSerie, borderColor:'#15803d', backgroundColor:'rgba(21,128,61,0.1)', fill:true, tension:.35, pointRadius: labels.length>30?0:3, pointHoverRadius:5 }] },
+    options: recOpts
+  });
+}
+
+function _renderFinanceiro(data){
+  const totais = data.totais || {};
+  const porDia = data.por_dia || [];
+  const porClinica = data.por_clinica || [];
+
+  const semDados = porDia.length===0 && porClinica.length===0;
+  const semDadosEl = document.getElementById('fin_sem_dados');
+  if(semDadosEl) semDadosEl.style.display = semDados ? '' : 'none';
+
+  const totalExames = totais.exames || 0;
+  const totalReceita = totais.receita || 0;
+  const ticket = totalExames>0 ? totalReceita/totalExames : 0;
+  document.getElementById('fin_total_exames').textContent = totalExames;
+  document.getElementById('fin_total_receita').textContent = _fmt_brl(totalReceita);
+  document.getElementById('fin_ticket_medio').textContent = _fmt_brl(ticket);
+  document.getElementById('fin_clinicas_ativas').textContent = porClinica.length;
+
+  _finDadosAtual = data;
+  _renderChartsTemporais(porDia);
+
+  const coresClinica = porClinica.map(c=>c.cor||'#64748b');
+  const nomesClinica = porClinica.map(c=>c.nome);
+  const examesClinica = porClinica.map(c=>c.exames);
+  const receitaClinica = porClinica.map(c=>c.receita);
+
+  const totalExamesClin = examesClinica.reduce((s,v)=>s+v,0);
+  const totalEclinEl = document.getElementById('fin_eclin_total');
+  if(totalEclinEl) totalEclinEl.textContent = totalExamesClin;
+
+  _finChart('chart_exames_clinica', {
+    type:'doughnut',
+    data:{ labels:nomesClinica, datasets:[{ data:examesClinica, backgroundColor:coresClinica, borderWidth:2, borderColor:'white', hoverOffset:6 }] },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'68%', layout:{padding:14},
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ctx.label+': '+ctx.parsed+' exame(s)' } } }
+    }
+  });
+  _renderExamesClinicaLista(porClinica, totalExamesClin);
+
+  const totalReceitaClin = receitaClinica.reduce((s,v)=>s+v,0);
+  const totalRclinEl = document.getElementById('fin_rclin_total');
+  if(totalRclinEl) totalRclinEl.textContent = _fmt_brl(totalReceitaClin);
+
+  _finChart('chart_receita_clinica', {
+    type:'doughnut',
+    data:{ labels:nomesClinica, datasets:[{ data:receitaClinica, backgroundColor:coresClinica, borderWidth:2, borderColor:'white', hoverOffset:6 }] },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'68%', layout:{padding:14},
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ctx.label+': '+_fmt_brl(ctx.parsed) } } }
+    }
+  });
+  _renderReceitaClinicaLista(porClinica, totalReceitaClin);
+}
+
+function _renderExamesClinicaLista(porClinica, totalExames){
+  const lista = document.getElementById('fin_eclin_lista');
+  if(!lista) return;
+  if(!porClinica.length){
+    lista.innerHTML = '<div style="color:#94a3b8;font-size:12px;padding:16px 0;text-align:center">Nenhum exame no período</div>';
+    return;
+  }
+  lista.innerHTML = porClinica.map(c=>{
+    const pct = totalExames>0 ? (c.exames/totalExames*100).toFixed(2) : '0.00';
+    return '<div class="fin-rclin-item">'
+      + '<div class="fin-rclin-dot" style="background:'+(c.cor||'#64748b')+'"></div>'
+      + '<div class="fin-rclin-info"><div class="fin-rclin-nome">'+c.nome+'</div><div class="fin-rclin-sub">Porcentagem</div></div>'
+      + '<div class="fin-rclin-vals"><div class="fin-rclin-valor">'+c.exames+' exame'+(c.exames!==1?'s':'')+'</div><div class="fin-rclin-pct">'+pct+'%</div></div>'
+      + '</div>';
+  }).join('');
+}
+
+function _renderReceitaClinicaLista(porClinica, totalReceita){
+  const lista = document.getElementById('fin_rclin_lista');
+  if(!lista) return;
+  if(!porClinica.length){
+    lista.innerHTML = '<div style="color:#94a3b8;font-size:12px;padding:16px 0;text-align:center">Nenhuma receita no período</div>';
+    return;
+  }
+  lista.innerHTML = porClinica.map(c=>{
+    const pct = totalReceita>0 ? (c.receita/totalReceita*100).toFixed(2) : '0.00';
+    return '<div class="fin-rclin-item">'
+      + '<div class="fin-rclin-dot" style="background:'+(c.cor||'#64748b')+'"></div>'
+      + '<div class="fin-rclin-info"><div class="fin-rclin-nome">'+c.nome+'</div><div class="fin-rclin-sub">Porcentagem</div></div>'
+      + '<div class="fin-rclin-vals"><div class="fin-rclin-valor">'+_fmt_brl(c.receita)+'</div><div class="fin-rclin-pct">'+pct+'%</div></div>'
+      + '</div>';
+  }).join('');
+}
+
+// ── Sub-tabs Visão Geral / Relatórios ──
+function finMostrarSubtab(qual){
+  document.getElementById('fin_subtab_visaogeral').style.display = qual==='visaogeral' ? '' : 'none';
+  document.getElementById('fin_subtab_relatorios').style.display = qual==='relatorios' ? '' : 'none';
+  document.getElementById('fin_subtab_btn_visaogeral').classList.toggle('active', qual==='visaogeral');
+  document.getElementById('fin_subtab_btn_relatorios').classList.toggle('active', qual==='relatorios');
+  if(qual==='relatorios') popularSelectRelClinica();
+  if(qual==='visaogeral' && _finPrecisaAtualizar){ _finPrecisaAtualizar=false; carregarFinanceiro(); }
+}
+
+function popularSelectRelClinica(){
+  const sel = document.getElementById('rel_clinica');
+  if(!sel) return;
+  const atual = sel.value;
+  sel.innerHTML = '<option value="">Todas as clínicas</option>'+
+    clinicas.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+  if(atual && clinicas.some(c=>c.id===atual)) sel.value = atual;
+}
+
+function relLimparAtivo(){
+  document.querySelectorAll('#fin_subtab_relatorios .fin-per-btn').forEach(b=>b.classList.remove('ativo'));
+}
+
+function relSetMes(offset, btn){
+  const hj = new Date();
+  let ano = hj.getFullYear();
+  let mes = hj.getMonth()+1+offset;
+  if(mes<=0){ mes+=12; ano-=1; }
+  if(mes>12){ mes-=12; ano+=1; }
+  const ultimo = new Date(ano, mes, 0).getDate();
+  const p = n=>String(n).padStart(2,'0');
+  document.getElementById('rel_data_ini').value = ano+'-'+p(mes)+'-01';
+  document.getElementById('rel_data_fim').value = ano+'-'+p(mes)+'-'+p(ultimo);
+  document.querySelectorAll('#fin_subtab_relatorios .fin-per-btn').forEach(b=>b.classList.remove('ativo'));
+  if(btn) btn.classList.add('ativo');
+}
+
+function relSetDias(dias, btn){
+  const hj = new Date();
+  const fmt = d=> d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  if(dias===0){
+    document.getElementById('rel_data_ini').value = '';
+    document.getElementById('rel_data_fim').value = '';
+  } else {
+    const ini = new Date(hj); ini.setDate(hj.getDate()-dias+1);
+    document.getElementById('rel_data_ini').value = fmt(ini);
+    document.getElementById('rel_data_fim').value = fmt(hj);
+  }
+  document.querySelectorAll('#fin_subtab_relatorios .fin-per-btn').forEach(b=>b.classList.remove('ativo'));
+  if(btn) btn.classList.add('ativo');
+}
+
+// ── Valor individual do exame (override do valor padrão da clínica) ──
+async function salvarValorExame(examId, novoValor){
+  const ex = exames.find(e=>e.id===examId);
+  if(!ex) return false;
+  if(novoValor===null || novoValor===undefined) delete ex.valor_exame;
+  else ex.valor_exame = novoValor;
+
+  try{
+    const { data: sd } = await supa.auth.getSession();
+    if(!sd?.session){
+      const { error: re } = await supa.auth.refreshSession();
+      if(re){ console.error('Sessão expirada:', re); return false; }
+    }
+  } catch(err){ console.error('Erro ao verificar sessão:', err); return false; }
+
+  const { error } = await supa.from('exames').upsert({
+    id: ex.id,
+    user_id: _userId,
+    dados: ex,
+    atualizado_em: new Date().toISOString()
+  }, { onConflict: 'id' });
+  if(error){ console.error('Erro ao salvar valor do exame:', error); toast('Erro ao salvar valor do exame', 'warn'); return false; }
+  return true;
+}
+
+let _finPrecisaAtualizar = false;
+function _atualizarAposEdicaoValor(){
+  gerarRelatorio();
+  // Evita recriar gráficos do Chart.js enquanto a aba Visão Geral está oculta
+  // (canvas com display:none mede largura 0 e o gráfico fica quebrado).
+  const vg = document.getElementById('fin_subtab_visaogeral');
+  if(vg && vg.style.display!=='none') carregarFinanceiro();
+  else _finPrecisaAtualizar = true;
+}
+
+function editarValorExame(examId, tdEl){
+  if(tdEl.querySelector('input')) return;
+  const ex = exames.find(e=>e.id===examId);
+  if(!ex) return;
+  const padrao = _finClinicaInfo(ex.clinica_id).valor_particular || 0;
+  const atual = _valorExame(ex);
+
+  tdEl.classList.add('editando');
+  tdEl.innerHTML = '<input type="number" step="0.01" min="0" class="rel-val-input" value="'+atual.toFixed(2)+'">';
+  const inp = tdEl.querySelector('input');
+  inp.focus();
+  inp.select();
+
+  let commited = false;
+  const commit = async ()=>{
+    if(commited) return;
+    commited = true;
+    const raw = inp.value.trim();
+    let novo = raw==='' ? null : parseFloat(raw.replace(',','.'));
+    if(novo!=null && isNaN(novo)) novo = null;
+    if(novo!=null && Math.abs(novo-padrao)<0.005) novo = null; // igual ao padrão → não guarda override
+    const ok = await salvarValorExame(examId, novo);
+    if(ok) toast(novo===null ? 'Valor restaurado ao padrão da clínica' : 'Valor do exame atualizado', 'ok');
+    _atualizarAposEdicaoValor();
+  };
+  inp.addEventListener('blur', commit);
+  inp.addEventListener('keydown', ev=>{
+    if(ev.key==='Enter'){ ev.preventDefault(); inp.blur(); }
+    else if(ev.key==='Escape'){ ev.preventDefault(); commited=true; _renderRelatorio(_relDadosAtual); }
+  });
+}
+
+function resetarValorExame(examId){
+  salvarValorExame(examId, null).then(ok=>{
+    if(ok) toast('Valor restaurado ao padrão da clínica', 'ok');
+    _atualizarAposEdicaoValor();
+  });
+}
+
+function gerarRelatorio(){
+  const clinicaId = document.getElementById('rel_clinica').value;
+  const dataIni = document.getElementById('rel_data_ini').value;
+  const dataFim = document.getElementById('rel_data_fim').value;
+
+  document.getElementById('rel_inicial').style.display = 'none';
+  document.getElementById('rel_empty').style.display = 'none';
+  document.getElementById('rel_resultado').style.display = 'none';
+
+  _relDadosAtual = listarExamesRelatorio(clinicaId, dataIni, dataFim);
+  _renderRelatorio(_relDadosAtual);
+}
+
+function _renderRelatorio(examesRel){
+  if(!examesRel || !examesRel.length){
+    document.getElementById('rel_empty').style.display = '';
+    document.getElementById('rel_resultado').style.display = 'none';
+    return;
+  }
+  document.getElementById('rel_empty').style.display = 'none';
+  document.getElementById('rel_resultado').style.display = '';
+
+  const totalReceita = examesRel.reduce((s,e)=>s+(e.valor_por_exame||0),0);
+  const ticket = examesRel.length>0 ? totalReceita/examesRel.length : 0;
+  const clinicasSet = {};
+  examesRel.forEach(e=>{ clinicasSet[e.nome_clinica]=true; });
+  const nClinicas = Object.keys(clinicasSet).length;
+
+  document.getElementById('rel_tot_exames').textContent = examesRel.length;
+  document.getElementById('rel_tot_receita').textContent = _fmt_brl(totalReceita);
+  document.getElementById('rel_ticket').textContent = _fmt_brl(ticket);
+  document.getElementById('rel_n_clinicas').textContent = nClinicas;
+
+  document.getElementById('rel_tbody').innerHTML = examesRel.map((e,i)=>
+    '<tr>'
+    + '<td class="rel-td-num" style="color:#94a3b8;font-size:11px">'+(i+1)+'</td>'
+    + '<td><span class="rel-clinica-dot" style="background:'+(e.cor||'#64748b')+'"></span>'+e.nome_clinica+'</td>'
+    + '<td>'+e.nome_paciente+'</td>'
+    + '<td style="font-size:11.5px;color:#64748b">'+e.id_exame+'</td>'
+    + '<td style="white-space:nowrap">'+e.data_exame+'</td>'
+    + '<td class="rel-td-num rel-td-valor" onclick="editarValorExame(\''+e.id+'\', this)" title="Clique para editar o valor deste exame">'
+    +   _fmt_brl(e.valor_por_exame||0)
+    +   (e.valor_personalizado
+          ? '<span class="rel-val-tag" title="Valor personalizado — padrão da clínica: '+_fmt_brl(e.valor_padrao)+'">editado</span>'
+            + '<button type="button" class="rel-val-reset" title="Restaurar valor padrão da clínica" onclick="event.stopPropagation();resetarValorExame(\''+e.id+'\')">↺</button>'
+          : '<svg class="rel-val-edit-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>')
+    + '</td>'
+    + '</tr>'
+  ).join('');
+
+  document.getElementById('rel_tfoot').innerHTML = '<tr>'
+    + '<td colspan="5" style="text-align:right;padding-right:14px">Total ('+examesRel.length+' exame'+(examesRel.length!==1?'s':'')+')</td>'
+    + '<td class="rel-td-num">'+_fmt_brl(totalReceita)+'</td>'
+    + '</tr>';
+}
+
+// ── Exportar relatório via impressão do navegador ──
+function relImprimir(){
+  const selEl = document.getElementById('rel_clinica');
+  const clinicaNome = selEl.value ? selEl.options[selEl.selectedIndex].textContent : 'Todas as clínicas';
+  const ini = document.getElementById('rel_data_ini').value;
+  const fim = document.getElementById('rel_data_fim').value;
+  const fmtBr = s => s ? s.split('-').reverse().join('/') : '';
+  let periodo = 'Todo o período';
+  if(ini && fim) periodo = fmtBr(ini)+' a '+fmtBr(fim);
+  else if(ini) periodo = 'A partir de '+fmtBr(ini);
+  else if(fim) periodo = 'Até '+fmtBr(fim);
+
+  const totalExames = document.getElementById('rel_tot_exames').textContent;
+  const totalReceita = document.getElementById('rel_tot_receita').textContent;
+  const ticket = document.getElementById('rel_ticket').textContent;
+  const nClinicas = document.getElementById('rel_n_clinicas').textContent;
+
+  const linhas = _relDadosAtual.map((e,i)=>
+    '<tr>'
+    + '<td class="num">'+(i+1)+'</td>'
+    + '<td>'+e.nome_clinica+'</td>'
+    + '<td>'+e.nome_paciente+'</td>'
+    + '<td>'+e.id_exame+'</td>'
+    + '<td>'+e.data_exame+'</td>'
+    + '<td class="num">'+_fmt_brl(e.valor_por_exame||0)+'</td>'
+    + '</tr>'
+  ).join('');
+
+  const emitido = new Date().toLocaleString('pt-BR');
+
+  const html = '<!doctype html><html><head><meta charset="utf-8"><title>Relatório Financeiro</title><style>'
+    + "*{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}"
+    + 'body{margin:32px;color:#0f172a}'
+    + 'h1{font-size:19px;margin-bottom:2px}'
+    + '.sub{color:#64748b;font-size:12.5px;margin-bottom:20px}'
+    + '.cards{display:flex;gap:12px;margin-bottom:22px;flex-wrap:wrap}'
+    + '.card{border:1px solid #e2e8f0;border-radius:8px;padding:10px 16px;min-width:120px}'
+    + '.card .lbl{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}'
+    + '.card .val{font-size:18px;font-weight:700}'
+    + 'table{width:100%;border-collapse:collapse;font-size:12px}'
+    + 'th{background:#f8fafc;text-align:left;padding:8px 10px;border-bottom:1px solid #e2e8f0;font-size:10px;text-transform:uppercase;color:#64748b;letter-spacing:.04em}'
+    + 'td{padding:7px 10px;border-bottom:1px solid #f1f5f9}'
+    + 'td.num{text-align:right;font-variant-numeric:tabular-nums}'
+    + 'tfoot td{font-weight:700;border-top:2px solid #e2e8f0}'
+    + '.emitido{margin-top:24px;font-size:10.5px;color:#94a3b8}'
+    + '@media print{ body{margin:14mm} }'
+    + '</style></head><body>'
+    + '<h1>Relatório Financeiro — Laudo ECO</h1>'
+    + '<div class="sub">'+clinicaNome+' · '+periodo+'</div>'
+    + '<div class="cards">'
+    +   '<div class="card"><div class="lbl">Total de exames</div><div class="val">'+totalExames+'</div></div>'
+    +   '<div class="card"><div class="lbl">Receita total</div><div class="val">'+totalReceita+'</div></div>'
+    +   '<div class="card"><div class="lbl">Ticket médio</div><div class="val">'+ticket+'</div></div>'
+    +   '<div class="card"><div class="lbl">Clínicas</div><div class="val">'+nClinicas+'</div></div>'
+    + '</div>'
+    + '<table><thead><tr><th style="width:32px">#</th><th>Clínica</th><th>Paciente</th><th>Registro</th><th>Data Exame</th><th style="text-align:right">Valor</th></tr></thead>'
+    + '<tbody>'+linhas+'</tbody>'
+    + '<tfoot><tr><td colspan="5" style="text-align:right;padding-right:14px">Total ('+_relDadosAtual.length+' exame'+(_relDadosAtual.length!==1?'s':'')+')</td><td class="num">'+totalReceita+'</td></tr></tfoot>'
+    + '</table>'
+    + '<div class="emitido">Emitido em '+emitido+'</div>'
+    + '</body></html>';
+
+  const w = window.open('', '_blank');
+  if(!w){ toast('Permita pop-ups para exportar o relatório', 'warn'); return; }
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+  w.onload = ()=>{ w.focus(); w.print(); };
+}
+
+function initFinanceiro(){
+  if(!_finIniciado){
+    _finIniciado = true;
+    finMostrarSubtab('visaogeral');
+  }
+  popularSelectRelClinica();
+  carregarFinanceiro();
+}
+
 function onBusca(pg,valor){
   document.getElementById(pg==='inbox'?'busca_inbox_wrap':'busca_conc_wrap').classList.toggle('has-value',!!valor.trim());
   clearTimeout(_buscaTimer[pg]);
