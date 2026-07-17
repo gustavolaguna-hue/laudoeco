@@ -2857,9 +2857,9 @@ function _ymdLocal(iso){
   if(isNaN(d)) return null;
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
-// Concluídos filtram pela data de conclusão (fallback: data do exame)
+// Concluídos/Financeiro filtram pela data do exame (fallback: data de conclusão)
 function _dataConc(e){
-  return e.finalizado_em ? _ymdLocal(e.finalizado_em) : (e.data||null);
+  return e.data || (e.finalizado_em ? _ymdLocal(e.finalizado_em) : null);
 }
 function _passaFiltro(e,pg){
   const clin=(document.getElementById(pg==='inbox'?'filtro_clinica_i':'filtro_clinica_c')||{}).value||'';
