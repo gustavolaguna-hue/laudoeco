@@ -2861,6 +2861,19 @@ function _ymdLocal(iso){
 function _dataConc(e){
   return e.data || (e.finalizado_em ? _ymdLocal(e.finalizado_em) : null);
 }
+function _registroNum(reg){
+  if(!reg) return -1;
+  const m = String(reg).match(/(\d+)\s*$/);
+  return m ? parseInt(m[1],10) : -1;
+}
+// Ordena por data do exame (mais recente primeiro) e, em empate, por registro (maior primeiro).
+function _sortConc(arr){
+  return arr.slice().sort((a,b)=>{
+    const da=_dataConc(a)||'', db=_dataConc(b)||'';
+    if(da!==db) return da<db?1:-1;
+    return _registroNum(b.registro)-_registroNum(a.registro);
+  });
+}
 function _passaFiltro(e,pg){
   const clin=(document.getElementById(pg==='inbox'?'filtro_clinica_i':'filtro_clinica_c')||{}).value||'';
   if(clin && e.clinica_id!==clin) return false;
@@ -3626,7 +3639,7 @@ function renderListas(){
   popularFiltrosClinica();
   const pend=exames.filter(e=>e.status!=='concluido');
   const conc=exames.filter(e=>e.status==='concluido');
-  const concF=conc.filter(e=>_passaFiltro(e,'conc'));
+  const concF=_sortConc(conc.filter(e=>_passaFiltro(e,'conc')));
   renderLista('lista_inbox',pend.filter(e=>_passaFiltro(e,'inbox')),'inbox_vz');
   renderLista('lista_conc',concF,'conc_vz');
   const resEl=document.getElementById('conc_resultado');
