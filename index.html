@@ -1593,6 +1593,9 @@ function atualizarTexto(fid){
         .replace('{FE_S}',   mv('m_fe_simp'))
         .replace('{PSVD}',   mc('c_psvd'))
         .replace('{VELAO}',  mv('m_vel_ao'))
+        .replace('{VMAXAO}', mv('m_ea_vmax'))
+        .replace('{GMAO}',   mv('m_ea_gm'))
+        .replace('{VTIAO}',  mv('m_ea_vti'))
         // Valores calculados
         .replace('{FE_T}',   mc('c_fe_t'))
         .replace('{FE_E}',   mc('c_fe_e'))
@@ -1607,7 +1610,11 @@ function atualizarTexto(fid){
         .replace('{MV_ALT}', mc('c_mv_alt'))
         .replace('{ER}',     mc('c_er'))
         .replace('{SC}',     mc('c_sc'))
-        .replace('{IMC}',    mc('c_imc'));
+        .replace('{IMC}',    mc('c_imc'))
+        .replace('{GPAO}',   mc('c_ea_gp'))
+        .replace('{DVI}',    mc('c_ea_dvi'))
+        .replace('{AVA}',    mc('c_ea_ava'))
+        .replace('{AVAI}',   mc('c_ea_avai'));
     }
   }
 
@@ -3207,7 +3214,12 @@ function _renderChartsTemporais(porDia){
     const x = rect.left + window.scrollX + tooltip.caretX;
     const y = rect.top + window.scrollY + tooltip.caretY;
     tooltipEl.style.opacity='1';
-    tooltipEl.style.left=(x+12)+'px';
+    const tw = tooltipEl.offsetWidth;
+    let left = x - tw - 12;
+    if(left < window.scrollX + 8) left = x + 12;
+    const maxLeft = window.scrollX + document.documentElement.clientWidth - tw - 8;
+    if(left > maxLeft) left = maxLeft;
+    tooltipEl.style.left = left+'px';
     tooltipEl.style.top=(y-tooltipEl.offsetHeight/2)+'px';
   };
 
@@ -3757,12 +3769,14 @@ const VARS = [
     ['{DAO}','Diâmetro aorta'],['{DAE}','Diâmetro átrio esquerdo'],['{DDVD}','DD ventrículo direito'],
     ['{DDVE}','DD ventrículo esquerdo'],['{DSVE}','DS ventrículo esquerdo'],['{SEPTO}','Septo interventricular'],
     ['{PAREDE}','Parede posterior'],['{ASC}','Aorta ascendente'],['{VOL4C}','Volume 4 câmaras'],
-    ['{VOL2C}','Volume 2 câmaras'],['{FE}','FE Simpson'],['{FE_S}','FE Simpson (alternativa)'],['{PSVD}','Pressão sistólica VD'],['{VELAO}','Velocidade aórtica']
+    ['{VOL2C}','Volume 2 câmaras'],['{FE}','FE Simpson'],['{FE_S}','FE Simpson (alternativa)'],['{PSVD}','Pressão sistólica VD'],['{VELAO}','Velocidade aórtica'],
+    ['{VMAXAO}','Vmax Ao (estenose aórtica)'],['{GMAO}','GM Ao (estenose aórtica)'],['{VTIAO}','VTI Ao (estenose aórtica)']
   ]},
   {grupo:'Valores calculados', items:[
     ['{FE_T}','FE Teicholz'],['{FE_E}','FE Encurtamento'],['{VOLD}','Vol diastólico'],['{VOLS}','Vol sistólico'],
     ['{VAE}','Vol AE médio'],['{VAEi}','Vol AE indexado (VAEi)'],['{VAD}','Vol AD'],['{VADi}','Vol AD indexado (VADi)'],['{MV}','Massa VE'],['{MV_SC}','Massa VE / SC'],
-    ['{MV_ALT}','Massa VE / Altura'],['{ER}','Espessura relativa'],['{SC}','Superfície corporal'],['{IMC}','IMC']
+    ['{MV_ALT}','Massa VE / Altura'],['{ER}','Espessura relativa'],['{SC}','Superfície corporal'],['{IMC}','IMC'],
+    ['{GPAO}','GP Ao (gradiente de pico)'],['{DVI}','DVI (índice de velocidade)'],['{AVA}','AVA (área valva aórtica)'],['{AVAI}','AVAi (AVA indexada)']
   ]}
 ];
 
