@@ -1700,9 +1700,10 @@ function calcular(){
         if (cor) vaeiEl.style.setProperty('color', cor, 'important');
         else vaeiEl.style.removeProperty('color');
         // Auto-preencher d_ae com base no VAEi
+        // (mas não se o usuário já colocou manualmente o código 0 = texto livre)
         const aeCode = vaei > 48 ? 4 : vaei > 41 ? 3 : vaei > 34 ? 2 : 1;
         const aeInp = document.getElementById('d_ae_c');
-        if (aeInp) { aeInp.value = aeCode; onCod('d_ae','MORFOLOGIA'); }
+        if (aeInp && parseInt(aeInp.value) !== 0) { aeInp.value = aeCode; onCod('d_ae','MORFOLOGIA'); }
       } else { set('c_vaei', null); }
 
       if (vad !== null && sc) {
