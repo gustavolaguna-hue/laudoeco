@@ -322,6 +322,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* ===== CLÍNICAS ===== */
 .cl-list{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.ref-group{margin-bottom:22px}
+.ref-group-ttl{font-size:13.5px;font-weight:700;color:#0f172a;margin-bottom:10px;padding-bottom:6px;border-bottom:1.5px solid #e5e0d6}
+.ref-card{background:#fff;border:1px solid #e5e0d6;border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.ref-card-ttl{font-size:12.5px;font-weight:600;color:#374151;margin-bottom:8px}
+.ref-unit{font-weight:400;color:#94a3b8;font-size:11.5px}
+.ref-card-campos{display:flex;flex-wrap:wrap;gap:12px 18px}
+.ref-field{display:flex;flex-direction:column;gap:3px;font-size:11px;color:#64748b}
+.ref-field input{width:70px;padding:5px 8px;border:1.5px solid #e5e0d6;border-radius:6px;font-size:12.5px;text-align:center;outline:none;font-family:inherit}
+.ref-field input:focus{border-color:#c7d7ea;background:#f5f9ff}
 .cl-card{display:grid;grid-template-columns:56px 1fr auto;align-items:center;gap:16px;padding:14px 16px;background:#fff;border:1px solid #e8e3d8;border-radius:12px;transition:border-color .15s}
 .cl-card:hover{border-color:#c9c0ae}
 .me-card{display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px;padding:14px 16px;background:#fff;border:1px solid #e8e3d8;border-radius:12px;transition:border-color .15s}
@@ -450,6 +459,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <button class="nav-item" data-pg="medicos" onclick="setPage('medicos')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       <span class="nav-lbl">Médicos</span>
+    </button>
+    <button class="nav-item" data-pg="ref_medidas" onclick="setPage('ref_medidas')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18M3 9v10a2 2 0 0 0 2 2h4m0-16v18m6-12h4m-4 4h4m-4 4h4"/></svg>
+      <span class="nav-lbl">Medidas</span>
     </button>
     <button class="nav-item" data-pg="financeiro" onclick="setPage('financeiro')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
@@ -592,6 +605,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <button class="btn btn-pri" onclick="abrirModalMedico()">+ Novo médico</button>
     </div>
     <div class="cl-list" id="me_grid"></div>
+  </div>
+
+  <!-- PG MEDIDAS (VALORES DE REFERÊNCIA) -->
+  <div id="pg_ref_medidas" style="display:none">
+    <div class="pg-hdr">
+      <h1>Medidas</h1>
+      <button class="btn" onclick="restaurarRefConfigPadrao()">Restaurar padrão</button>
+    </div>
+    <p style="color:#64748b;font-size:12.5px;margin:-8px 0 16px">Valores de referência usados para destacar medidas alteradas. Alterações aqui valem para todos os seus exames e computadores.</p>
+    <div id="ref_config_grid"></div>
   </div>
 
   <!-- PG FINANCEIRO -->
@@ -1393,6 +1416,7 @@ document.addEventListener('DOMContentLoaded', () => {
       await carregarTabelas();
       await carregarClinicas();
       await carregarMedicos();
+      await carregarRefConfig();
       await carregarExames();
       _dadosCarregados = true;
       setDataInput('n_data', hoje());
@@ -1726,61 +1750,84 @@ function atualizarTexto(fid){
 // ============================================================
 // VALORES DE REFERÊNCIA (DIRETRIZES) — Medidas
 // ============================================================
-const REF_MEDIDAS = {
+const REF_CONFIG_DEFAULT = {
+  dao:       { F: { max: 36, idxMax: 22 }, M: { max: 40, idxMax: 21 } },
+  dae:       { F: { min: 27, max: 38, idxMin: 15, idxMax: 23 }, M: { min: 30, max: 40, idxMin: 15, idxMax: 23 } },
+  ddvd:      { max: 33, leve: 35, moderado: 39 },
+  ddve:      { F: { min: 37.8, max: 52.2 }, M: { min: 42.0, max: 58.4 } },
+  dsve:      { F: { min: 21.6, max: 34.8 }, M: { min: 25.0, max: 39.8 } },
+  septo:     { F: { min: 6.0, max: 10, leve: 12, moderado: 15 }, M: { min: 6.0, max: 11, leve: 13, moderado: 16 } },
+  parede:    { F: { min: 6.0, max: 10, leve: 12, moderado: 15 }, M: { min: 6.0, max: 11, leve: 13, moderado: 16 } },
+  asc:       { F: { max: 35, idxMax: 19 }, M: { max: 38, idxMax: 22 } },
+  strain:    { limitrofeMin: 16, limitrofeMax: 18 },
+  eIdade:    { septal: { jovem: 7, meia: 6, idoso: 6 }, lateral: { jovem: 10, meia: 8, idoso: 7 } },
+  psvd:      { corte: 35 },
+  ea:        { min: 0.8, max: 2.0 },
+  eeMedio:   { corte: 14 },
+  eeSeptal:  { corte: 15 },
+  eeLateral: { corte: 13 },
+  vaei:      { leve: 34, moderado: 41, importante: 48 },
+  vadi:      { leve: 33, moderado: 38, importante: 44 }
+};
+let REF_CONFIG = JSON.parse(JSON.stringify(REF_CONFIG_DEFAULT));
+
+function buildRefMedidas(){
+  const C = REF_CONFIG;
+  return {
   m_dao: {
     unidade: ' mm',
     porSexo: {
-      F: { abs: { max: 36 }, idx: { max: 22 } },
-      M: { abs: { max: 40 }, idx: { max: 21 } }
+      F: { abs: { max: C.dao.F.max }, idx: { max: C.dao.F.idxMax } },
+      M: { abs: { max: C.dao.M.max }, idx: { max: C.dao.M.idxMax } }
     }
   },
   m_dae: {
     unidade: ' mm',
     porSexo: {
-      F: { abs: { min: 27, max: 38 }, idx: { min: 15, max: 23 } },
-      M: { abs: { min: 30, max: 40 }, idx: { min: 15, max: 23 } }
+      F: { abs: { min: C.dae.F.min, max: C.dae.F.max }, idx: { min: C.dae.F.idxMin, max: C.dae.F.idxMax } },
+      M: { abs: { min: C.dae.M.min, max: C.dae.M.max }, idx: { min: C.dae.M.idxMin, max: C.dae.M.idxMax } }
     }
   },
   m_ddvd: {
     unidade: ' mm',
-    ambos: { abs: { max: 33, maxIncl: false } },
-    tiers: [ { max: 35, nivel: 'leve' }, { max: 39, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ]
+    ambos: { abs: { max: C.ddvd.max, maxIncl: false } },
+    tiers: [ { max: C.ddvd.leve, nivel: 'leve' }, { max: C.ddvd.moderado, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ]
   },
   m_ddve: {
     unidade: ' mm',
     porSexo: {
-      F: { abs: { min: 37.8, max: 52.2 } },
-      M: { abs: { min: 42.0, max: 58.4 } }
+      F: { abs: { min: C.ddve.F.min, max: C.ddve.F.max } },
+      M: { abs: { min: C.ddve.M.min, max: C.ddve.M.max } }
     }
   },
   m_dsve: {
     unidade: ' mm',
     porSexo: {
-      F: { abs: { min: 21.6, max: 34.8 } },
-      M: { abs: { min: 25.0, max: 39.8 } }
+      F: { abs: { min: C.dsve.F.min, max: C.dsve.F.max } },
+      M: { abs: { min: C.dsve.M.min, max: C.dsve.M.max } }
     }
   },
   m_septo: {
     unidade: ' mm',
     porSexo: {
-      // Destaque começa em 10 (F) / 11 (M) — exatamente o piso do "leve" da diretriz, sem lacuna.
-      F: { abs: { min: 6.0, max: 10, maxIncl: false }, tiers: [ { max: 12, nivel: 'leve' }, { max: 15, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ] },
-      M: { abs: { min: 6.0, max: 11, maxIncl: false }, tiers: [ { max: 13, nivel: 'leve' }, { max: 16, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ] }
+      // Destaque começa exatamente no piso do "leve" da diretriz, sem lacuna.
+      F: { abs: { min: C.septo.F.min, max: C.septo.F.max, maxIncl: false }, tiers: [ { max: C.septo.F.leve, nivel: 'leve' }, { max: C.septo.F.moderado, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ] },
+      M: { abs: { min: C.septo.M.min, max: C.septo.M.max, maxIncl: false }, tiers: [ { max: C.septo.M.leve, nivel: 'leve' }, { max: C.septo.M.moderado, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ] }
     }
   },
   m_parede: {
     unidade: ' mm',
     porSexo: {
       // Mesmo critério do SEPTO.
-      F: { abs: { min: 6.0, max: 10, maxIncl: false }, tiers: [ { max: 12, nivel: 'leve' }, { max: 15, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ] },
-      M: { abs: { min: 6.0, max: 11, maxIncl: false }, tiers: [ { max: 13, nivel: 'leve' }, { max: 16, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ] }
+      F: { abs: { min: C.parede.F.min, max: C.parede.F.max, maxIncl: false }, tiers: [ { max: C.parede.F.leve, nivel: 'leve' }, { max: C.parede.F.moderado, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ] },
+      M: { abs: { min: C.parede.M.min, max: C.parede.M.max, maxIncl: false }, tiers: [ { max: C.parede.M.leve, nivel: 'leve' }, { max: C.parede.M.moderado, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ] }
     }
   },
   m_asc: {
     unidade: ' mm',
     porSexo: {
-      F: { abs: { max: 35 }, idx: { max: 19 } },
-      M: { abs: { max: 38 }, idx: { max: 22 } }
+      F: { abs: { max: C.asc.F.max }, idx: { max: C.asc.F.idxMax } },
+      M: { abs: { max: C.asc.M.max }, idx: { max: C.asc.M.idxMax } }
     }
   },
   m_ve_strain: {
@@ -1788,7 +1835,7 @@ const REF_MEDIDAS = {
     // Aqui, ao contrário dos outros campos, o "pior" é o módulo do valor ser MENOR
     // (strain reduzido = função sistólica pior). Aceita ser digitado com ou sem o sinal negativo.
     strainMagnitude: true,
-    ambos: { limitrofeMin: 16, limitrofeMax: 18 }
+    ambos: { limitrofeMin: C.strain.limitrofeMin, limitrofeMax: C.strain.limitrofeMax }
   },
   // e´ septal e e´ lateral — cortes de relaxamento alterado ajustados por idade (ASE 2025, Tabela 6)
   // <20 anos usa a mesma faixa de 20-39 (sem tabela específica para esse grupo)
@@ -1800,7 +1847,176 @@ const REF_MEDIDAS = {
     unidade: ' cm/s',
     porIdadeE: 'lateral'
   }
-};
+  };
+}
+let REF_MEDIDAS = buildRefMedidas();
+
+// ------------------------------------------------------------
+// Tela "Medidas" — consulta e edição dos valores de referência
+// ------------------------------------------------------------
+const REF_CONFIG_GROUPS = [
+  { titulo: 'Aorta e átrios', linhas: [
+      { titulo: 'Aorta (DAO)', unidade: 'mm', campos: [
+          { path: 'dao.F.max', label: 'Máx. (F)' }, { path: 'dao.F.idxMax', label: 'Máx./SC (F)' },
+          { path: 'dao.M.max', label: 'Máx. (M)' }, { path: 'dao.M.idxMax', label: 'Máx./SC (M)' }
+      ]},
+      { titulo: 'Átrio esquerdo (DAE)', unidade: 'mm', campos: [
+          { path: 'dae.F.min', label: 'Mín. (F)' }, { path: 'dae.F.max', label: 'Máx. (F)' }, { path: 'dae.F.idxMin', label: 'Mín./SC (F)' }, { path: 'dae.F.idxMax', label: 'Máx./SC (F)' },
+          { path: 'dae.M.min', label: 'Mín. (M)' }, { path: 'dae.M.max', label: 'Máx. (M)' }, { path: 'dae.M.idxMin', label: 'Mín./SC (M)' }, { path: 'dae.M.idxMax', label: 'Máx./SC (M)' }
+      ]},
+      { titulo: 'Aorta ascendente (ASC)', unidade: 'mm', campos: [
+          { path: 'asc.F.max', label: 'Máx. (F)' }, { path: 'asc.F.idxMax', label: 'Máx./SC (F)' },
+          { path: 'asc.M.max', label: 'Máx. (M)' }, { path: 'asc.M.idxMax', label: 'Máx./SC (M)' }
+      ]}
+  ]},
+  { titulo: 'Ventrículos', linhas: [
+      { titulo: 'DD ventrículo direito (DDVD)', unidade: 'mm', campos: [
+          { path: 'ddvd.max', label: 'Normal até' }, { path: 'ddvd.leve', label: 'Leve até' }, { path: 'ddvd.moderado', label: 'Moderado até' }
+      ]},
+      { titulo: 'DD ventrículo esquerdo (DDVE)', unidade: 'mm', campos: [
+          { path: 'ddve.F.min', label: 'Mín. (F)' }, { path: 'ddve.F.max', label: 'Máx. (F)' },
+          { path: 'ddve.M.min', label: 'Mín. (M)' }, { path: 'ddve.M.max', label: 'Máx. (M)' }
+      ]},
+      { titulo: 'DS ventrículo esquerdo (DSVE)', unidade: 'mm', campos: [
+          { path: 'dsve.F.min', label: 'Mín. (F)' }, { path: 'dsve.F.max', label: 'Máx. (F)' },
+          { path: 'dsve.M.min', label: 'Mín. (M)' }, { path: 'dsve.M.max', label: 'Máx. (M)' }
+      ]},
+      { titulo: 'Septo interventricular', unidade: 'mm', campos: [
+          { path: 'septo.F.min', label: 'Mín. (F)' }, { path: 'septo.F.max', label: 'Normal até (F)' }, { path: 'septo.F.leve', label: 'Leve até (F)' }, { path: 'septo.F.moderado', label: 'Moderado até (F)' },
+          { path: 'septo.M.min', label: 'Mín. (M)' }, { path: 'septo.M.max', label: 'Normal até (M)' }, { path: 'septo.M.leve', label: 'Leve até (M)' }, { path: 'septo.M.moderado', label: 'Moderado até (M)' }
+      ]},
+      { titulo: 'Parede posterior', unidade: 'mm', campos: [
+          { path: 'parede.F.min', label: 'Mín. (F)' }, { path: 'parede.F.max', label: 'Normal até (F)' }, { path: 'parede.F.leve', label: 'Leve até (F)' }, { path: 'parede.F.moderado', label: 'Moderado até (F)' },
+          { path: 'parede.M.min', label: 'Mín. (M)' }, { path: 'parede.M.max', label: 'Normal até (M)' }, { path: 'parede.M.leve', label: 'Leve até (M)' }, { path: 'parede.M.moderado', label: 'Moderado até (M)' }
+      ]},
+      { titulo: 'Strain longitudinal VE', unidade: '%', campos: [
+          { path: 'strain.limitrofeMin', label: 'Reduzido abaixo de' }, { path: 'strain.limitrofeMax', label: 'Limítrofe até' }
+      ]}
+  ]},
+  { titulo: 'Volumes atriais indexados', linhas: [
+      { titulo: 'VAEi — Volume AE indexado', unidade: 'ml/m²', campos: [
+          { path: 'vaei.leve', label: 'Leve acima de' }, { path: 'vaei.moderado', label: 'Moderado acima de' }, { path: 'vaei.importante', label: 'Importante acima de' }
+      ]},
+      { titulo: 'VADi — Volume AD indexado', unidade: 'ml/m²', campos: [
+          { path: 'vadi.leve', label: 'Leve a partir de' }, { path: 'vadi.moderado', label: 'Moderado acima de' }, { path: 'vadi.importante', label: 'Importante acima de' }
+      ]}
+  ]},
+  { titulo: 'Função diastólica', linhas: [
+      { titulo: 'Relação E/A', unidade: '', campos: [
+          { path: 'ea.min', label: 'Alterado abaixo de' }, { path: 'ea.max', label: 'Alterado acima de' }
+      ]},
+      { titulo: 'E/e´ médio', unidade: '', campos: [ { path: 'eeMedio.corte', label: 'Alterado a partir de' } ]},
+      { titulo: 'E/e´ septal', unidade: '', campos: [ { path: 'eeSeptal.corte', label: 'Alterado a partir de' } ]},
+      { titulo: 'E/e´ lateral', unidade: '', campos: [ { path: 'eeLateral.corte', label: 'Alterado a partir de' } ]},
+      { titulo: 'e´ septal — corte por idade (relaxamento alterado)', unidade: 'cm/s', campos: [
+          { path: 'eIdade.septal.jovem', label: '< 40 anos: ≤' }, { path: 'eIdade.septal.meia', label: '40–65 anos: ≤' }, { path: 'eIdade.septal.idoso', label: '> 65 anos: ≤' }
+      ]},
+      { titulo: 'e´ lateral — corte por idade (relaxamento alterado)', unidade: 'cm/s', campos: [
+          { path: 'eIdade.lateral.jovem', label: '< 40 anos: ≤' }, { path: 'eIdade.lateral.meia', label: '40–65 anos: ≤' }, { path: 'eIdade.lateral.idoso', label: '> 65 anos: ≤' }
+      ]}
+  ]},
+  { titulo: 'Ventrículo direito', linhas: [
+      { titulo: 'PSVD — Pressão sistólica de VD', unidade: 'mmHg', campos: [ { path: 'psvd.corte', label: 'Alterado a partir de' } ]}
+  ]}
+];
+
+function _refGet(path){
+  return path.split('.').reduce((o, k) => (o == null ? o : o[k]), REF_CONFIG);
+}
+function _refSet(path, val){
+  const keys = path.split('.');
+  let o = REF_CONFIG;
+  for (let i = 0; i < keys.length - 1; i++) o = o[keys[i]];
+  o[keys[keys.length - 1]] = val;
+}
+function _refFmt(n){
+  return (n === null || n === undefined || n === Infinity) ? '' : String(n).replace('.', ',');
+}
+
+function renderRefConfig(){
+  const wrap = document.getElementById('ref_config_grid');
+  if (!wrap) return;
+  wrap.innerHTML = REF_CONFIG_GROUPS.map(g => `
+    <div class="ref-group">
+      <div class="ref-group-ttl">${g.titulo}</div>
+      ${g.linhas.map(l => `
+        <div class="ref-card">
+          <div class="ref-card-ttl">${l.titulo}${l.unidade ? ` <span class="ref-unit">(${l.unidade})</span>` : ''}</div>
+          <div class="ref-card-campos">
+            ${l.campos.map(c => `
+              <label class="ref-field">
+                <span>${c.label}</span>
+                <input type="text" inputmode="decimal" data-path="${c.path}" value="${_refFmt(_refGet(c.path))}" onchange="onRefConfigChange(this)">
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function onRefConfigChange(inp){
+  const raw = (inp.value || '').replace(',', '.').trim();
+  const val = parseFloat(raw);
+  if (isNaN(val)) { inp.value = _refFmt(_refGet(inp.dataset.path)); return; }
+  _refSet(inp.dataset.path, val);
+  inp.value = _refFmt(val);
+  REF_MEDIDAS = buildRefMedidas();
+  revalidarMedidas();
+  if (atual && typeof calcular === 'function') calcular();
+  salvarRefConfigDebounced();
+  toast('Valor de referência atualizado', 'ok');
+}
+
+function restaurarRefConfigPadrao(){
+  if (!confirm('Restaurar todos os valores de referência para o padrão? Isso desfaz qualquer alteração manual feita aqui.')) return;
+  REF_CONFIG = JSON.parse(JSON.stringify(REF_CONFIG_DEFAULT));
+  REF_MEDIDAS = buildRefMedidas();
+  revalidarMedidas();
+  if (atual && typeof calcular === 'function') calcular();
+  renderRefConfig();
+  salvarRefConfigDebounced();
+  toast('Valores de referência restaurados ao padrão', 'ok');
+}
+
+function _mergeProfundo(base, override){
+  if (!override || typeof override !== 'object') return base;
+  Object.keys(override).forEach(k => {
+    if (override[k] && typeof override[k] === 'object' && !Array.isArray(override[k])) {
+      base[k] = _mergeProfundo(base[k] || {}, override[k]);
+    } else {
+      base[k] = override[k];
+    }
+  });
+  return base;
+}
+
+async function carregarRefConfig(){
+  try {
+    const { data } = await supa.from('config_ref').select('dados').eq('user_id', _userId).maybeSingle();
+    REF_CONFIG = data?.dados
+      ? _mergeProfundo(JSON.parse(JSON.stringify(REF_CONFIG_DEFAULT)), data.dados)
+      : JSON.parse(JSON.stringify(REF_CONFIG_DEFAULT));
+  } catch (e) {
+    console.error('Erro ao carregar valores de referência:', e);
+    REF_CONFIG = JSON.parse(JSON.stringify(REF_CONFIG_DEFAULT));
+  }
+  REF_MEDIDAS = buildRefMedidas();
+}
+
+let _refConfigSaveTimer = null;
+function salvarRefConfigDebounced(){
+  clearTimeout(_refConfigSaveTimer);
+  _refConfigSaveTimer = setTimeout(async () => {
+    const { error } = await supa.from('config_ref').upsert(
+      { user_id: _userId, dados: REF_CONFIG, atualizado_em: new Date().toISOString() },
+      { onConflict: 'user_id' }
+    );
+    if (error) console.error('Erro ao salvar valores de referência:', error);
+  }, 800);
+}
+
 
 function _dentroFaixa(v, min, max, minIncl, maxIncl){
   if (min != null) { if (minIncl === false ? v <= min : v < min) return false; }
@@ -1817,9 +2033,8 @@ function avaliarMedida(fieldId, valor){
   if (ref.porIdadeE) {
     const idade = atual?.dn ? calcIdadeAnos(atual.dn) : null;
     if (idade === null) return { alterado: false, nivel: null, textoRange: '', unidade: ref.unidade };
-    const corte = ref.porIdadeE === 'septal'
-      ? (idade < 40 ? 7 : idade <= 65 ? 6 : 6)
-      : (idade < 40 ? 10 : idade <= 65 ? 8 : 7);
+    const faixa = REF_CONFIG.eIdade[ref.porIdadeE];
+    const corte = idade < 40 ? faixa.jovem : idade <= 65 ? faixa.meia : faixa.idoso;
     const alterado = valor <= corte;
     return { alterado, nivel: alterado ? 'alterado' : null, textoRange: `≤${fmtRef(corte)}`, unidade: ref.unidade };
   }
@@ -1933,12 +2148,12 @@ function calcular(){
         const vaei = (vol4c+vol2c)/2/sc;
         const vaeiEl = document.getElementById('c_vaei');
         vaeiEl.classList.remove('alt-leve','alt-moderado','alt-importante');
-        const nivelVaei = vaei > 48 ? 'importante' : vaei > 41 ? 'moderado' : vaei > 34 ? 'leve' : null;
+        const nivelVaei = vaei > REF_CONFIG.vaei.importante ? 'importante' : vaei > REF_CONFIG.vaei.moderado ? 'moderado' : vaei > REF_CONFIG.vaei.leve ? 'leve' : null;
         vaeiEl.textContent = vaei.toFixed(0) + ' ml/m²';
         if (nivelVaei) vaeiEl.classList.add('alt-' + nivelVaei);
         // Auto-preencher d_ae com base no VAEi
         // (mas não se o usuário já colocou manualmente o código 0 = texto livre)
-        const aeCode = vaei > 48 ? 4 : vaei > 41 ? 3 : vaei > 34 ? 2 : 1;
+        const aeCode = vaei > REF_CONFIG.vaei.importante ? 4 : vaei > REF_CONFIG.vaei.moderado ? 3 : vaei > REF_CONFIG.vaei.leve ? 2 : 1;
         const aeInp = document.getElementById('d_ae_c');
         if (aeInp && parseInt(aeInp.value) !== 0) { aeInp.value = aeCode; onCod('d_ae','MORFOLOGIA'); }
       } else {
@@ -1951,7 +2166,7 @@ function calcular(){
         const vadi = vad/sc;
         vadiEl.textContent = vadi.toFixed(0) + ' ml/m²';
         vadiEl.classList.remove('alt-leve','alt-moderado','alt-importante');
-        const nivelVadi = vadi > 44 ? 'importante' : vadi > 38 ? 'moderado' : vadi >= 33 ? 'leve' : null;
+        const nivelVadi = vadi > REF_CONFIG.vadi.importante ? 'importante' : vadi > REF_CONFIG.vadi.moderado ? 'moderado' : vadi >= REF_CONFIG.vadi.leve ? 'leve' : null;
         if (nivelVadi) vadiEl.classList.add('alt-' + nivelVadi);
         vadiEl.style.display = ''; vadiLbl.style.display = '';
       } else {
@@ -2126,7 +2341,7 @@ function calcular(){
       if (hasEA) {
         const ea = e / a;
         set('c_diast_ea', ea.toFixed(2));
-        if (ea < 0.8 || ea > 2.0) eaEl.classList.add('alt');
+        if (ea < REF_CONFIG.ea.min || ea > REF_CONFIG.ea.max) eaEl.classList.add('alt');
       } else {
         set('c_diast_ea', null);
       }
@@ -2136,7 +2351,7 @@ function calcular(){
         const emedio = (esep !== null && elat !== null) ? (esep + elat) / 2 : (esep ?? elat);
         const eeMedio = e / emedio;
         set('c_diast_ee', eeMedio.toFixed(1));
-        if (eeMedio >= 14) eeEl.classList.add('alt');
+        if (eeMedio >= REF_CONFIG.eeMedio.corte) eeEl.classList.add('alt');
         eeEl.style.display = ''; eeLbl.style.display = '';
       } else {
         eeEl.style.display = 'none'; eeLbl.style.display = 'none';
@@ -2159,14 +2374,14 @@ function calcular(){
       if (hasEsep) {
         const eesep = e / esep;
         set('c_diast_eesep', eesep.toFixed(1));
-        if (eesep >= 15) eesepEl.classList.add('alt');
+        if (eesep >= REF_CONFIG.eeSeptal.corte) eesepEl.classList.add('alt');
       } else {
         set('c_diast_eesep', null);
       }
       if (hasElat) {
         const eelat = e / elat;
         set('c_diast_eelat', eelat.toFixed(1));
-        if (eelat >= 13) eelatEl.classList.add('alt');
+        if (eelat >= REF_CONFIG.eeLateral.corte) eelatEl.classList.add('alt');
       } else {
         set('c_diast_eelat', null);
       }
@@ -2184,7 +2399,7 @@ function calcular(){
     set('c_psvd', psvd.toFixed(0), ' mmHg');
     const psvdEl = document.getElementById('c_psvd');
     psvdEl.classList.remove('alt','alt-leve','alt-moderado','alt-importante');
-    if (psvd >= 35) psvdEl.classList.add('alt');
+    if (psvd >= REF_CONFIG.psvd.corte) psvdEl.classList.add('alt');
     document.getElementById('psvd_row').style.display = '';
   } else {
     set('c_grad_max', null); set('c_psvd', null);
@@ -2550,7 +2765,7 @@ function setPage(pg){
   pgAtual=pg;
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.pg===pg));
 
-  const allPgs = ['pg_inbox','pg_conc','pg_tabelas','pg_clinicas','pg_medicos','pg_financeiro','pg_an'];
+  const allPgs = ['pg_inbox','pg_conc','pg_tabelas','pg_clinicas','pg_medicos','pg_ref_medidas','pg_financeiro','pg_an'];
   allPgs.forEach(id => document.getElementById(id).style.display='none');
 
   if (pg === 'tabelas') {
@@ -2562,6 +2777,9 @@ function setPage(pg){
   } else if (pg === 'medicos') {
     document.getElementById('pg_medicos').style.display='';
     renderMedicos();
+  } else if (pg === 'ref_medidas') {
+    document.getElementById('pg_ref_medidas').style.display='';
+    renderRefConfig();
   } else if (pg === 'financeiro') {
     document.getElementById('pg_financeiro').style.display='';
     initFinanceiro();
