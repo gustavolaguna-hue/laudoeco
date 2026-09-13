@@ -180,7 +180,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .an-acts{display:flex;gap:7px;flex-shrink:0;margin-left:auto}
 
 /* ===== 3 COLUNAS ===== */
-.cols3{display:grid;grid-template-columns:230px 1fr 250px;gap:12px;align-items:start}
+.cols3{display:grid;grid-template-columns:260px 1fr 250px;gap:12px;align-items:start}
 
 /* Coluna: fundo compartilhado */
 .col-card{background:white;border:1px solid #e8e8e8;border-radius:12px;overflow:hidden}
@@ -200,18 +200,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .d-val{font-size:12px;color:#0f172a;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* Campos de medidas */
-.m-row{display:grid;grid-template-columns:62px 1fr 28px;align-items:center;gap:4px;margin-bottom:1px}
+.m-row{display:grid;grid-template-columns:62px 66px 1fr;align-items:center;gap:8px;margin-bottom:1px}
 .m-row:last-child{margin-bottom:0}
 .m-grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 8px;margin-bottom:4px}
 .m-grid2 .m-row{grid-template-columns:46px 1fr 24px}
 .m-grid2 .m-lbl{font-size:10.5px}
 .m-grid2 .m-unit{font-size:9.5px}
-.m-lbl{font-size:11px;color:#64748b;font-weight:500}
-.m-inp{padding:1px 6px;border:1.5px solid #e5e0d6;border-radius:6px;font-size:12px;text-align:right;width:100%;outline:none;font-family:inherit;-moz-appearance:textfield}
+.m-lbl{font-size:11px;color:#64748b;font-weight:500;text-align:right}
+.m-inp{padding:1px 6px;border:1.5px solid #e5e0d6;border-radius:6px;font-size:12px;text-align:center;width:100%;outline:none;font-family:inherit;-moz-appearance:textfield}
 .m-inp::-webkit-inner-spin-button{-webkit-appearance:none}
 .m-inp:focus{border-color:#e5e0d6}
 .m-inp.has{border-color:#c7d7ea;background:#f5f9ff}
-.m-unit{font-size:10px;color:#94a3b8}
+.m-inp.alt{border-color:#f59e0b;background:#fffbeb}
+.m-inp.alt-leve{border-color:#4ade80;background:#f0fdf4}
+.m-inp.alt-moderado{border-color:#c084fc;background:#faf5ff}
+.m-inp.alt-importante{border-color:#f87171;background:#fef2f2}
+.m-unit{font-size:10px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ===== COLUNA 2: PRÉ-LAUDO (MINIMALISTA) ===== */
 
@@ -260,6 +264,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .c-lbl{color:#64748b}
 .c-val{color:#0f172a;font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
 .c-val.em{color:#1e3a5f;font-size:13px}
+.diast-grid{display:grid;grid-template-columns:62px 38px 78px 38px;gap:6px;justify-content:start}
+.diast-grid .c-lbl{text-align:right}
+.diast-grid .c-val{text-align:left}
+.c-val.alt-leve{color:#15803d;font-weight:600}
+.c-val.alt-moderado{color:#7e22ce;font-weight:600}
+.c-val.alt-importante{color:#b91c1c;font-weight:600}
+.c-val.alt{color:#b45309;font-weight:600}
 .geo-badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:700;margin-top:6px;text-align:center;width:100%;letter-spacing:.02em}
 .g-n{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
 .g-r{background:#fef3c7;color:#b45309;border:1px solid #fde68a}
@@ -313,6 +324,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .cl-list{display:flex;flex-direction:column;gap:10px;margin-top:4px}
 .cl-card{display:grid;grid-template-columns:56px 1fr auto;align-items:center;gap:16px;padding:14px 16px;background:#fff;border:1px solid #e8e3d8;border-radius:12px;transition:border-color .15s}
 .cl-card:hover{border-color:#c9c0ae}
+.me-card{display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px;padding:14px 16px;background:#fff;border:1px solid #e8e3d8;border-radius:12px;transition:border-color .15s}
+.me-card:hover{border-color:#c9c0ae}
+.me-nome{font-size:14.5px;font-weight:600;color:#0f172a}
+.combo-drop{position:absolute;top:100%;left:0;right:0;margin-top:4px;background:#fff;border:1.5px solid #e5e0d6;border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.12);max-height:220px;overflow-y:auto;z-index:50}
+.combo-item{padding:7px 10px;cursor:pointer;border-bottom:1px solid #f1f5f9}
+.combo-item:last-child{border-bottom:none}
+.combo-item:hover,.combo-item.active{background:#f8fafc}
+.combo-item-nome{font-size:13px;font-weight:500;color:#0f172a}
+.combo-item-meta{font-size:11px;color:#94a3b8;margin-top:1px}
+.combo-novo{color:#1d4ed8;font-size:12.5px;font-weight:500}
+.combo-empty{padding:10px;font-size:12px;color:#94a3b8;text-align:center}
 .cl-logo{width:56px;height:56px;border-radius:11px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;overflow:hidden;flex-shrink:0;letter-spacing:.03em}
 .cl-logo img{width:100%;height:100%;object-fit:contain}
 .cl-info-blk{min-width:0}
@@ -424,6 +446,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <button class="nav-item" data-pg="clinicas" onclick="setPage('clinicas')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       <span class="nav-lbl">Clínicas</span>
+    </button>
+    <button class="nav-item" data-pg="medicos" onclick="setPage('medicos')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span class="nav-lbl">Médicos</span>
     </button>
     <button class="nav-item" data-pg="financeiro" onclick="setPage('financeiro')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
@@ -558,6 +584,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <button class="btn btn-pri" onclick="abrirModalClinica()">+ Nova clínica</button>
     </div>
     <div class="cl-list" id="cl_grid"></div>
+  </div>
+
+  <div id="pg_medicos" style="display:none">
+    <div class="pg-hdr">
+      <h1>Médicos</h1>
+      <button class="btn btn-pri" onclick="abrirModalMedico()">+ Novo médico</button>
+    </div>
+    <div class="cl-list" id="me_grid"></div>
   </div>
 
   <!-- PG FINANCEIRO -->
@@ -810,9 +844,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="m-row"><span class="m-lbl">Onda A</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_diast_a" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">cm/s</span></div>
           <div class="m-row"><span class="m-lbl">e´ septal</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_diast_esep" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">cm/s</span></div>
           <div class="m-row"><span class="m-lbl">e´ lateral</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_diast_elat" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">cm/s</span></div>
-          <div class="calc-row" id="diast_ea_row" style="display:none;margin-top:6px"><span class="c-lbl">E/A</span><span class="c-val" id="c_diast_ea">—</span><span class="c-lbl" id="diast_ee_lbl" style="display:none;margin-left:12px">E/e´ médio</span><span class="c-val" id="c_diast_ee" style="display:none">—</span></div>
-          <div class="calc-row" id="diast_class_row" style="display:none;margin-top:6px;justify-content:center"><span class="c-val" id="c_diast_class" style="font-weight:700;text-transform:uppercase;text-align:center">—</span></div>
-          <div class="calc-row" id="diast_press_row" style="display:none;margin-top:2px"><span class="c-lbl">Pressão de enchimento</span><span class="c-val" id="c_diast_press">—</span></div>
+          <div class="calc-row diast-grid" id="diast_ea_row" style="display:none;margin-top:6px"><span class="c-lbl">E/A</span><span class="c-val" id="c_diast_ea">—</span><span class="c-lbl" id="diast_ee_lbl" style="display:none">E/e´ médio</span><span class="c-val" id="c_diast_ee" style="display:none">—</span></div>
+          <div class="calc-row diast-grid" id="diast_eesep_row" style="display:none;margin-top:2px"><span class="c-lbl">E/e´septal</span><span class="c-val" id="c_diast_eesep">—</span><span class="c-lbl">E/e´ lateral</span><span class="c-val" id="c_diast_eelat">—</span></div>
         </div>
         <div class="sec">
           <div class="sec-ttl">Volume dos Átrios</div>
@@ -928,6 +961,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="m-row"><span class="m-lbl">dP/dT</span><input class="m-inp" type="text" inputmode="decimal" id="m_dp_dt" step="1" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mmHg/s</span></div>
           <div class="m-row"><span class="m-lbl">MAPSE</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_ve_mapse" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mm</span></div>
           <div class="m-row"><span class="m-lbl">Onda S´</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_ve_onds" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">cm/s</span></div>
+          <div class="m-row"><span class="m-lbl">STRAIN</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_ve_strain" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">%</span></div>
         </div>
         <div class="sec">
           <div class="sec-ttl">Ventrículo Direito</div>
@@ -1027,6 +1061,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- ===== MODAL: MÉDICO ===== -->
+<div class="modal" id="modal_medico" style="display:none">
+  <div class="modal-back" onclick="fecharModalMedico()"></div>
+  <div class="modal-box">
+    <div class="modal-hdr"><h2 id="me_modal_titulo">Novo médico</h2><button class="modal-x" onclick="fecharModalMedico()">×</button></div>
+    <div class="modal-body">
+      <div class="ff"><label>Nome <span class="req">*</span></label><input type="text" id="me_nome" placeholder="ex: Dr. João Silva"></div>
+      <div class="frow" style="margin-top:10px">
+        <div class="ff"><label>CRM</label><input type="text" id="me_crm" placeholder="ex: CRM/SP 123456"></div>
+        <div class="ff"><label>Especialidade</label><input type="text" id="me_especialidade" placeholder="ex: Cardiologia"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="fecharModalMedico()">Cancelar</button>
+      <button class="btn btn-pri" id="me_modal_btn" onclick="salvarMedico()">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== MODAL: NOVO EXAME ===== -->
 <div class="modal" id="modal_novo" style="display:none">
   <div class="modal-back" onclick="fecharModalNovo()"></div>
@@ -1066,6 +1119,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="frow">
         <div class="ff"><label>Altura <span class="un">cm</span></label><input type="number" id="n_altura" step="0.1" placeholder="ex: 170"></div>
         <div class="ff"><label>Peso <span class="un">kg</span></label><input type="number" id="n_peso" step="0.1" placeholder="ex: 70"></div>
+      </div>
+      <div class="ff" style="margin-top:10px;position:relative">
+        <label>Médico solicitante</label>
+        <input type="text" id="n_medico" placeholder="Buscar ou cadastrar médico..." autocomplete="off" onfocus="abrirComboMedico()" oninput="_cboMedicoFiltrar()" onkeydown="onComboMedicoKey(event)" onblur="fecharComboMedicoDelay()">
+        <div id="n_medico_drop" class="combo-drop" style="display:none"></div>
       </div>
       <div class="frow" style="margin-top:10px;grid-template-columns:1fr">
         <div class="ff"><label>Contexto clínico <span style="font-size:10px;color:#94a3b8;font-weight:400">(não aparece no laudo)</span></label><textarea id="n_obs_clinica" rows="3" placeholder="Ex: HAS, DM2, histórico de IAM…" style="width:100%;padding:7px 9px;border:1px solid #e5e7eb;border-radius:7px;font-size:12.5px;font-family:inherit;resize:vertical;outline:none;color:#0f172a"></textarea></div>
@@ -1246,11 +1304,13 @@ function pararIdleKeepAlive(){
 // ============================================================
 let exames   = [];
 let clinicas = [];
+let medicos  = [];
 let atual    = null;
 let pgAtual  = 'inbox';
 let emAnalise = false;
 let _userId  = null;
 let _clinicaEditandoId = null;
+let _medicoEditandoId = null;
 let _dadosCarregados = false;
 
 // ============================================================
@@ -1332,6 +1392,7 @@ document.addEventListener('DOMContentLoaded', () => {
       _userId = session.user.id;
       await carregarTabelas();
       await carregarClinicas();
+      await carregarMedicos();
       await carregarExames();
       _dadosCarregados = true;
       setDataInput('n_data', hoje());
@@ -1587,6 +1648,15 @@ function atualizarTexto(fid){
         .replace('{SEPTO}',  mv('m_septo'))
         .replace('{PAREDE}', mv('m_parede'))
         .replace('{ASC}',    mv('m_asc'))
+        .replace('{STRAIN}', (()=>{
+          const raw = (document.getElementById('m_ve_strain')?.value || '').trim();
+          if (!raw) return '...';
+          const num = parseFloat(raw.replace(',', '.'));
+          if (isNaN(num)) return '...';
+          const mag = Math.abs(num);
+          const magStr = mag.toString().replace('.', ',');
+          return (mag === 0 ? '0' : '-' + magStr) + '%';
+        })())
         .replace('{VOL4C}',  mv('m_vol4c'))
         .replace('{VOL2C}',  mv('m_vol2c'))
         .replace('{FE}',     mv('m_fe_simp'))
@@ -1653,7 +1723,174 @@ function atualizarTexto(fid){
 // ============================================================
 // CÁLCULOS
 // ============================================================
-function marcar(inp){ inp.classList.toggle('has', inp.value !== ''); }
+// ============================================================
+// VALORES DE REFERÊNCIA (DIRETRIZES) — Medidas
+// ============================================================
+const REF_MEDIDAS = {
+  m_dao: {
+    unidade: ' mm',
+    porSexo: {
+      F: { abs: { max: 36 }, idx: { max: 22 } },
+      M: { abs: { max: 40 }, idx: { max: 21 } }
+    }
+  },
+  m_dae: {
+    unidade: ' mm',
+    porSexo: {
+      F: { abs: { min: 27, max: 38 }, idx: { min: 15, max: 23 } },
+      M: { abs: { min: 30, max: 40 }, idx: { min: 15, max: 23 } }
+    }
+  },
+  m_ddvd: {
+    unidade: ' mm',
+    ambos: { abs: { max: 33, maxIncl: false } },
+    tiers: [ { max: 35, nivel: 'leve' }, { max: 39, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ]
+  },
+  m_ddve: {
+    unidade: ' mm',
+    porSexo: {
+      F: { abs: { min: 37.8, max: 52.2 } },
+      M: { abs: { min: 42.0, max: 58.4 } }
+    }
+  },
+  m_dsve: {
+    unidade: ' mm',
+    porSexo: {
+      F: { abs: { min: 21.6, max: 34.8 } },
+      M: { abs: { min: 25.0, max: 39.8 } }
+    }
+  },
+  m_septo: {
+    unidade: ' mm',
+    porSexo: {
+      // Destaque começa em 10 (F) / 11 (M) — exatamente o piso do "leve" da diretriz, sem lacuna.
+      F: { abs: { min: 6.0, max: 10, maxIncl: false }, tiers: [ { max: 12, nivel: 'leve' }, { max: 15, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ] },
+      M: { abs: { min: 6.0, max: 11, maxIncl: false }, tiers: [ { max: 13, nivel: 'leve' }, { max: 16, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ] }
+    }
+  },
+  m_parede: {
+    unidade: ' mm',
+    porSexo: {
+      // Mesmo critério do SEPTO.
+      F: { abs: { min: 6.0, max: 10, maxIncl: false }, tiers: [ { max: 12, nivel: 'leve' }, { max: 15, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ] },
+      M: { abs: { min: 6.0, max: 11, maxIncl: false }, tiers: [ { max: 13, nivel: 'leve' }, { max: 16, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ] }
+    }
+  },
+  m_asc: {
+    unidade: ' mm',
+    porSexo: {
+      F: { abs: { max: 35 }, idx: { max: 19 } },
+      M: { abs: { max: 38 }, idx: { max: 22 } }
+    }
+  },
+  m_ve_strain: {
+    unidade: ' %',
+    // Aqui, ao contrário dos outros campos, o "pior" é o módulo do valor ser MENOR
+    // (strain reduzido = função sistólica pior). Aceita ser digitado com ou sem o sinal negativo.
+    strainMagnitude: true,
+    ambos: { limitrofeMin: 16, limitrofeMax: 18 }
+  },
+  // e´ septal e e´ lateral — cortes de relaxamento alterado ajustados por idade (ASE 2025, Tabela 6)
+  // <20 anos usa a mesma faixa de 20-39 (sem tabela específica para esse grupo)
+  m_diast_esep: {
+    unidade: ' cm/s',
+    porIdadeE: 'septal'
+  },
+  m_diast_elat: {
+    unidade: ' cm/s',
+    porIdadeE: 'lateral'
+  }
+};
+
+function _dentroFaixa(v, min, max, minIncl, maxIncl){
+  if (min != null) { if (minIncl === false ? v <= min : v < min) return false; }
+  if (max != null) { if (maxIncl === false ? v >= max : v > max) return false; }
+  return true;
+}
+
+function fmtRef(n){ return String(Math.round(n * 10) / 10); }
+
+function avaliarMedida(fieldId, valor){
+  const ref = REF_MEDIDAS[fieldId];
+  if (!ref) return null;
+
+  if (ref.porIdadeE) {
+    const idade = atual?.dn ? calcIdadeAnos(atual.dn) : null;
+    if (idade === null) return { alterado: false, nivel: null, textoRange: '', unidade: ref.unidade };
+    const corte = ref.porIdadeE === 'septal'
+      ? (idade < 40 ? 7 : idade <= 65 ? 6 : 6)
+      : (idade < 40 ? 10 : idade <= 65 ? 8 : 7);
+    const alterado = valor <= corte;
+    return { alterado, nivel: alterado ? 'alterado' : null, textoRange: `≤${fmtRef(corte)}`, unidade: ref.unidade };
+  }
+
+  if (ref.strainMagnitude) {
+    const mag = Math.abs(valor);
+    const b = ref.ambos;
+    let nivel = null, alterado = false;
+    if (mag < b.limitrofeMin) { alterado = true; nivel = 'reduzido'; }
+    else if (mag <= b.limitrofeMax) { alterado = true; nivel = 'limitrofe'; }
+    return { alterado, nivel, textoRange: `>${fmtRef(b.limitrofeMax)}`, unidade: ref.unidade };
+  }
+
+  const sexo = atual?.sexo === 'Masculino' ? 'M' : (atual?.sexo === 'Feminino' ? 'F' : null);
+  const bloco = ref.ambos || (sexo && ref.porSexo ? ref.porSexo[sexo] : null);
+  if (!bloco) return null;
+
+  const abs = bloco.abs;
+  const idx = bloco.idx;
+  const sc = getSC();
+
+  const dentroAbs = abs ? _dentroFaixa(valor, abs.min, abs.max, abs.minIncl, abs.maxIncl) : true;
+  const dentroIdx = (idx && sc) ? _dentroFaixa(valor / sc, idx.min, idx.max, idx.minIncl, idx.maxIncl) : true;
+  const alterado = !dentroAbs || !dentroIdx;
+
+  let nivel = alterado ? 'alterado' : null;
+  const tiers = bloco.tiers || ref.tiers;
+  const excedeuMax = abs && abs.max != null && (abs.maxIncl === false ? valor >= abs.max : valor > abs.max);
+  if (alterado && tiers && excedeuMax) {
+    for (const t of tiers) { if (valor <= t.max) { nivel = t.nivel; break; } }
+  }
+
+  let textoRange = '';
+  if (abs) {
+    if (abs.min != null && abs.max != null) textoRange = `${fmtRef(abs.min)}–${fmtRef(abs.max)}`;
+    else if (abs.max != null) textoRange = `${abs.maxIncl === false ? '<' : '≤'}${fmtRef(abs.max)}`;
+    else if (abs.min != null) textoRange = `${abs.minIncl === false ? '>' : '≥'}${fmtRef(abs.min)}`;
+  }
+
+  return { alterado, nivel, textoRange, unidade: ref.unidade };
+}
+
+function avaliarMedidaCampo(inp){
+  inp.classList.remove('alt', 'alt-leve', 'alt-moderado', 'alt-importante');
+  const ref = REF_MEDIDAS[inp.id];
+  if (!ref) return;
+  const unitEl = (inp.nextElementSibling && inp.nextElementSibling.classList.contains('m-unit')) ? inp.nextElementSibling : null;
+  const valor = parseFloat((inp.value || '').replace(',', '.'));
+  if (inp.value === '' || isNaN(valor)) {
+    if (unitEl) unitEl.textContent = ref.unidade.trim();
+    return;
+  }
+  const res = avaliarMedida(inp.id, valor);
+  if (unitEl) unitEl.textContent = (res && res.textoRange) ? (res.textoRange + res.unidade) : ref.unidade.trim();
+  if (res && res.alterado) {
+    inp.classList.add(
+      res.nivel === 'leve' || res.nivel === 'limitrofe' ? 'alt-leve' :
+      res.nivel === 'moderado' ? 'alt-moderado' :
+      res.nivel === 'importante' || res.nivel === 'reduzido' ? 'alt-importante' : 'alt'
+    );
+  }
+}
+
+function revalidarMedidas(){
+  Object.keys(REF_MEDIDAS).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) avaliarMedidaCampo(el);
+  });
+}
+
+function marcar(inp){ inp.classList.toggle('has', inp.value !== ''); avaliarMedidaCampo(inp); }
 
 function calcular(){
   const g = id => { const v = parseFloat((document.getElementById(id)?.value||'').replace(',','.')); return isNaN(v)?null:v; };
@@ -1695,25 +1932,30 @@ function calcular(){
       if (hasVAE && sc) {
         const vaei = (vol4c+vol2c)/2/sc;
         const vaeiEl = document.getElementById('c_vaei');
-        const cor = vaei > 48 ? '#dc2626' : vaei > 41 ? '#ea580c' : vaei > 34 ? '#2563eb' : '';
+        vaeiEl.classList.remove('alt-leve','alt-moderado','alt-importante');
+        const nivelVaei = vaei > 48 ? 'importante' : vaei > 41 ? 'moderado' : vaei > 34 ? 'leve' : null;
         vaeiEl.textContent = vaei.toFixed(0) + ' ml/m²';
-        if (cor) vaeiEl.style.setProperty('color', cor, 'important');
-        else vaeiEl.style.removeProperty('color');
+        if (nivelVaei) vaeiEl.classList.add('alt-' + nivelVaei);
         // Auto-preencher d_ae com base no VAEi
         // (mas não se o usuário já colocou manualmente o código 0 = texto livre)
         const aeCode = vaei > 48 ? 4 : vaei > 41 ? 3 : vaei > 34 ? 2 : 1;
         const aeInp = document.getElementById('d_ae_c');
         if (aeInp && parseInt(aeInp.value) !== 0) { aeInp.value = aeCode; onCod('d_ae','MORFOLOGIA'); }
-      } else { set('c_vaei', null); }
+      } else {
+        const vaeiEl = document.getElementById('c_vaei');
+        vaeiEl.classList.remove('alt-leve','alt-moderado','alt-importante');
+        set('c_vaei', null);
+      }
 
       if (vad !== null && sc) {
         const vadi = vad/sc;
         vadiEl.textContent = vadi.toFixed(0) + ' ml/m²';
-        const corVadi = vadi > 44 ? '#dc2626' : vadi > 38 ? '#ea580c' : vadi >= 33 ? '#2563eb' : '';
-        if (corVadi) vadiEl.style.setProperty('color', corVadi, 'important');
-        else vadiEl.style.removeProperty('color');
+        vadiEl.classList.remove('alt-leve','alt-moderado','alt-importante');
+        const nivelVadi = vadi > 44 ? 'importante' : vadi > 38 ? 'moderado' : vadi >= 33 ? 'leve' : null;
+        if (nivelVadi) vadiEl.classList.add('alt-' + nivelVadi);
         vadiEl.style.display = ''; vadiLbl.style.display = '';
       } else {
+        vadiEl.classList.remove('alt-leve','alt-moderado','alt-importante');
         vadiEl.style.display = 'none'; vadiLbl.style.display = 'none';
       }
     } else {
@@ -1870,20 +2112,31 @@ function calcular(){
     }
   }
 
-  // Diastólica — E/A, E/e´ médio e classificação ASE 2025
+  // Diastólica — E/A, E/e´ médio, E/e´ septal e E/e´ lateral
   { const e = g('m_diast_e'), a = g('m_diast_a');
     const esep = g('m_diast_esep'), elat = g('m_diast_elat');
     const row = document.getElementById('diast_ea_row');
+    const eaEl = document.getElementById('c_diast_ea');
     const eeEl = document.getElementById('c_diast_ee'), eeLbl = document.getElementById('diast_ee_lbl');
     const hasEA = e !== null && a !== null && a !== 0;
     const hasEE = e !== null && (esep !== null || elat !== null);
     if (hasEA || hasEE) {
-      row.style.display = '';
-      if (hasEA) set('c_diast_ea', (e / a).toFixed(2)); else set('c_diast_ea', null);
+      row.style.display = 'grid';
+      eaEl.classList.remove('alt');
+      if (hasEA) {
+        const ea = e / a;
+        set('c_diast_ea', ea.toFixed(2));
+        if (ea < 0.8 || ea > 2.0) eaEl.classList.add('alt');
+      } else {
+        set('c_diast_ea', null);
+      }
+      eeEl.classList.remove('alt');
       if (hasEE) {
         // E, e´ todos em cm/s → E/e´ é adimensional, sem conversão necessária
         const emedio = (esep !== null && elat !== null) ? (esep + elat) / 2 : (esep ?? elat);
-        set('c_diast_ee', (e / emedio).toFixed(1));
+        const eeMedio = e / emedio;
+        set('c_diast_ee', eeMedio.toFixed(1));
+        if (eeMedio >= 14) eeEl.classList.add('alt');
         eeEl.style.display = ''; eeLbl.style.display = '';
       } else {
         eeEl.style.display = 'none'; eeLbl.style.display = 'none';
@@ -1892,119 +2145,33 @@ function calcular(){
       row.style.display = 'none';
       eeEl.style.display = 'none'; eeLbl.style.display = 'none';
     }
-  }
 
-  // ASE/EACVI 2016 — Classificação da Função Diastólica
-  {
-    const e    = g('m_diast_e'),    a    = g('m_diast_a');
-    const esep = g('m_diast_esep'), elat = g('m_diast_elat');
-    // FE: usa Simpson se disponível, senão Teicholz
-    const feSimp2 = g('m_fe_simp');
-    const ddve2 = g('m_ddve'), dsve2 = g('m_dsve');
-    const feTeich2 = (ddve2 && dsve2) ? (() => {
-      const vd = (7/(2.4+ddve2/10))*Math.pow(ddve2/10,3);
-      const vs = (7/(2.4+dsve2/10))*Math.pow(dsve2/10,3);
-      return (vd-vs)/vd*100;
-    })() : null;
-    const fe = feSimp2 ?? feTeich2;
-    const trVmax = g('m_vmax_it');                        // TR Vmax (m/s)
-    const _v4 = g('m_vol4c'), _v2 = g('m_vol2c'), _sc = getSC();
-    const classRow = document.getElementById('diast_class_row');
-    const classEl  = document.getElementById('c_diast_class');
-    const pressRow = document.getElementById('diast_press_row');
-    const pressEl  = document.getElementById('c_diast_press');
-
-    // Derivados
-    const ea      = (e !== null && a !== null && a !== 0) ? e / a : null;
-    const emedio  = (esep !== null && elat !== null) ? (esep + elat) / 2
-                  : (esep ?? elat);
-    const ee      = (e !== null && emedio !== null) ? e / emedio : null;
-    const lavi    = (_v4 !== null && _v2 !== null && _sc) ? (_v4 + _v2) / 2 / _sc : null;
-
-    // Dados mínimos: E, A, pelo menos um e´
-    const temDados = e !== null && a !== null && ea !== null && emedio !== null;
-
-    const hide = () => {
-      classRow.style.display = 'none';
-      pressRow.style.display = 'none';
-    };
-
-    if (!temDados) { hide(); }
-    else {
-
-      // ── HELPER: classificar grau (Passo 2) ──────────────────
-      const classificarGrau = () => {
-        // Caso 1
-        if (ea <= 0.8 && e <= 50) {
-          return { grau: 'I', press: 'Normal', cor: '#d97706',
-                   desc: 'Padrão de relaxamento alterado.' };
-        }
-        // Caso 3
-        if (ea >= 2) {
-          return { grau: 'III', press: 'Elevada', cor: '#dc2626',
-                   desc: 'Padrão restritivo.' };
-        }
-        // Caso 2: (E/A ≤0,8 e E>50) ou (0,8 < E/A < 2)
-        let pressao = 0;
-        if (ee   !== null && ee   > 14)  pressao++;
-        if (lavi  !== null && lavi > 34)  pressao++;
-        if (trVmax !== null && trVmax > 2.8) pressao++;
-
-        if (pressao >= 2) {
-          return { grau: 'II', press: 'Elevada', cor: '#ea580c',
-                   desc: 'Padrão pseudonormal.' };
-        } else {
-          return { grau: 'I',  press: 'Normal', cor: '#d97706',
-                   desc: 'Padrão de relaxamento alterado.' };
-        }
-      };
-
-      let label, cor, pressLabel;
-
-      if (fe === null || fe >= 50) {
-        // ── PASSO 1: verificar presença de disfunção ─────────
-        let criterios = 0;
-
-        // Critério 1 — e´ (septal E/OU lateral conta como 1)
-        if ((esep !== null && esep < 7) || (elat !== null && elat < 10)) criterios++;
-
-        // Critério 2 — E/e´ médio > 14
-        if (ee !== null && ee > 14) criterios++;
-
-        // Critério 3 — LAVI > 34
-        if (lavi !== null && lavi > 34) criterios++;
-
-        // Critério 4 — TR Vmax > 2,8 m/s
-        if (trVmax !== null && trVmax > 2.8) criterios++;
-
-        if (criterios <= 1) {
-          label = 'Normal'; cor = '#16a34a'; pressLabel = null;
-        } else if (criterios === 2) {
-          const r = classificarGrau();
-          label = 'Indeterminada / Grau ' + r.grau; cor = '#6b7280'; pressLabel = r.press;
-        } else {
-          // ≥3 critérios → disfunção → Passo 2
-          const r = classificarGrau();
-          label = 'Disfunção Grau ' + r.grau; cor = r.cor; pressLabel = r.press;
-        }
-
+    // E/e´ septal e E/e´ lateral individuais
+    const eesepRow = document.getElementById('diast_eesep_row');
+    const eesepEl = document.getElementById('c_diast_eesep');
+    const eelatEl = document.getElementById('c_diast_eelat');
+    const hasEsep = e !== null && esep !== null && esep !== 0;
+    const hasElat = e !== null && elat !== null && elat !== 0;
+    eesepEl.classList.remove('alt');
+    eelatEl.classList.remove('alt');
+    if (hasEsep || hasElat) {
+      eesepRow.style.display = 'grid';
+      if (hasEsep) {
+        const eesep = e / esep;
+        set('c_diast_eesep', eesep.toFixed(1));
+        if (eesep >= 15) eesepEl.classList.add('alt');
       } else {
-        // FE < 50% → ir direto ao Passo 2
-        const r = classificarGrau();
-        label = 'Disfunção Grau ' + r.grau; cor = r.cor; pressLabel = r.press;
+        set('c_diast_eesep', null);
       }
-
-      classEl.textContent  = label;
-      classEl.style.color  = cor;
-      classRow.style.display = '';
-
-      if (pressLabel) {
-        pressEl.textContent = pressLabel;
-        pressEl.style.color = pressLabel === 'Elevada' ? '#dc2626' : '#16a34a';
-        pressRow.style.display = '';
+      if (hasElat) {
+        const eelat = e / elat;
+        set('c_diast_eelat', eelat.toFixed(1));
+        if (eelat >= 13) eelatEl.classList.add('alt');
       } else {
-        pressRow.style.display = 'none';
+        set('c_diast_eelat', null);
       }
+    } else {
+      eesepRow.style.display = 'none';
     }
   }
 
@@ -2012,11 +2179,17 @@ function calcular(){
   const vmax_it = g('m_vmax_it'), pad = g('m_pad');
   if (vmax_it !== null && pad !== null) {
     const grad_max = 4 * vmax_it * vmax_it;
+    const psvd = grad_max + pad;
     set('c_grad_max', grad_max.toFixed(0), ' mmHg');
-    set('c_psvd', (grad_max + pad).toFixed(0), ' mmHg');
+    set('c_psvd', psvd.toFixed(0), ' mmHg');
+    const psvdEl = document.getElementById('c_psvd');
+    psvdEl.classList.remove('alt','alt-leve','alt-moderado','alt-importante');
+    if (psvd >= 35) psvdEl.classList.add('alt');
     document.getElementById('psvd_row').style.display = '';
   } else {
     set('c_grad_max', null); set('c_psvd', null);
+    const psvdEl = document.getElementById('c_psvd');
+    if (psvdEl) psvdEl.classList.remove('alt','alt-leve','alt-moderado','alt-importante');
     document.getElementById('psvd_row').style.display = 'none';
   }
 
@@ -2208,9 +2381,11 @@ function renderDados(e){
   const idade = e.dn ? calcIdadeAnos(e.dn) : null;
   const cl = e.clinica_id ? clinicas.find(c => c.id === e.clinica_id) : null;
   const clCor = cl?.cor || '#94a3b8';
+  const med = e.medico_id ? medicos.find(m => m.id === e.medico_id) : null;
 
   const campos = [
     ['Registro',   e.registro],
+    ['Médico',     med?.nome || null],
     ['Data',       fmtD(e.data)],
     ['Nasc.',      e.dn ? fmtD(e.dn) : null],
     ['Altura',     e.altura ? e.altura+' cm' : null],
@@ -2244,7 +2419,7 @@ function carregarForm(e){
   ['m_dao','m_dae','m_ddvd','m_ddve','m_dsve','m_septo','m_parede','m_asc',
    'm_vol4c','m_vol2c','m_vad','m_fe_simp','m_psvd','m_vel_ao','m_vsve_d','m_vsve_vti','m_vsve_fc',
    'm_ea_vmax','m_ea_gm','m_ea_vti',
-   'm_ve_mapse','m_ve_onds',
+   'm_ve_mapse','m_ve_onds','m_ve_strain',
    'm_vd_tapse','m_vd_onds','m_vd_fac','m_vd_dpdt',
    'm_diast_e','m_diast_a','m_diast_esep','m_diast_elat',
    'm_vmax_it',
@@ -2290,7 +2465,7 @@ function coletarMedidas(){
   ['m_dao','m_dae','m_ddvd','m_ddve','m_dsve','m_septo','m_parede','m_asc',
    'm_vol4c','m_vol2c','m_vad','m_fe_simp','m_psvd','m_vel_ao','m_vsve_d','m_vsve_vti','m_vsve_fc',
    'm_ea_vmax','m_ea_gm','m_ea_vti',
-   'm_ve_mapse','m_ve_onds',
+   'm_ve_mapse','m_ve_onds','m_ve_strain',
    'm_vd_tapse','m_vd_onds','m_vd_fac','m_vd_dpdt',
    'm_diast_e','m_diast_a','m_diast_esep','m_diast_elat',
    'm_vmax_it','m_pad','m_dp_dt',
@@ -2375,7 +2550,7 @@ function setPage(pg){
   pgAtual=pg;
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.pg===pg));
 
-  const allPgs = ['pg_inbox','pg_conc','pg_tabelas','pg_clinicas','pg_financeiro','pg_an'];
+  const allPgs = ['pg_inbox','pg_conc','pg_tabelas','pg_clinicas','pg_medicos','pg_financeiro','pg_an'];
   allPgs.forEach(id => document.getElementById(id).style.display='none');
 
   if (pg === 'tabelas') {
@@ -2384,6 +2559,9 @@ function setPage(pg){
   } else if (pg === 'clinicas') {
     document.getElementById('pg_clinicas').style.display='';
     renderClinicas();
+  } else if (pg === 'medicos') {
+    document.getElementById('pg_medicos').style.display='';
+    renderMedicos();
   } else if (pg === 'financeiro') {
     document.getElementById('pg_financeiro').style.display='';
     initFinanceiro();
@@ -2454,6 +2632,7 @@ function abrirModalNovo(){
   limparModal();
   document.getElementById('n_data').value = hoje();
   renderSeletorClinica();
+  renderSeletorMedicos();
   onSelecionarClinicaNovo(); // preenche registro com o número atual da clínica já selecionada
   document.getElementById('modal_titulo').textContent = 'Novo exame';
   document.getElementById('modal_btn_ok').textContent = 'Criar exame';
@@ -2465,6 +2644,7 @@ function abrirModalNovo(){
 function abrirModalEditar(){
   if (!atual) return;
   renderSeletorClinica();
+  renderSeletorMedicos();
   document.getElementById('modal_titulo').textContent = 'Editar dados do paciente';
   document.getElementById('modal_btn_ok').textContent = 'Salvar';
   document.getElementById('modal_btn_ok').onclick = salvarEdicaoDados;
@@ -2477,6 +2657,8 @@ function abrirModalEditar(){
   document.getElementById('n_altura').value     = atual.altura || '';
   document.getElementById('n_obs_clinica').value = atual.obs_clinica || '';
   document.getElementById('n_clinica').value = atual.clinica_id || '';
+  const medAtual = atual.medico_id ? medicos.find(m => m.id === atual.medico_id) : null;
+  document.getElementById('n_medico').value = medAtual?.nome || '';
   document.getElementById('modal_novo').style.display='flex';
   setTimeout(()=>document.getElementById('n_nome').focus(),50);
 }
@@ -2495,10 +2677,12 @@ async function salvarEdicaoDados(){
   atual.altura    = parseFloat(document.getElementById('n_altura').value) || null;
   atual.obs_clinica = document.getElementById('n_obs_clinica').value.trim();
   atual.clinica_id = document.getElementById('n_clinica').value || null;
+  atual.medico_id = await resolverMedicoPorNome(document.getElementById('n_medico').value);
   atual.atualizado_em = new Date().toISOString();
   fecharModalNovo();
   renderDados(atual);
   calcular();
+  revalidarMedidas();
   await salvarLocal();
   toast('Dados atualizados!', 'ok');
 }
@@ -2530,6 +2714,7 @@ async function criarExame(){
   if(!nome){alert('Informe o nome do paciente.');return;}
   if(!data){alert('Informe a data do exame.');return;}
   const clinicaId = document.getElementById('n_clinica').value || null;
+  const medicoId = await resolverMedicoPorNome(document.getElementById('n_medico').value);
   const registro  = document.getElementById('n_reg').value.trim();
   const seq=String(exames.length+1).padStart(4,'0');
   const novo={
@@ -2542,6 +2727,7 @@ async function criarExame(){
     obs_clinica: document.getElementById('n_obs_clinica').value.trim(),
     indicacao: '',
     clinica_id: clinicaId,
+    medico_id: medicoId,
     status:'pendente', medidas:{}, codigos:{}, diag_resumo:'',
     criado_em:new Date().toISOString(),
   };
@@ -2555,7 +2741,7 @@ async function criarExame(){
   abrirAnalise(novo.id);
 }
 function limparModal(){
-  ['n_nome','n_reg','n_peso','n_altura','n_obs_clinica'].forEach(id=>document.getElementById(id).value='');
+  ['n_nome','n_reg','n_peso','n_altura','n_obs_clinica','n_medico'].forEach(id=>document.getElementById(id).value='');
   setDataInput('n_dn', '');
   document.getElementById('n_sexo').value='';
   document.getElementById('n_data').value=hoje();
@@ -3769,7 +3955,7 @@ const VARS = [
   {grupo:'Medidas brutas', items:[
     ['{DAO}','Diâmetro aorta'],['{DAE}','Diâmetro átrio esquerdo'],['{DDVD}','DD ventrículo direito'],
     ['{DDVE}','DD ventrículo esquerdo'],['{DSVE}','DS ventrículo esquerdo'],['{SEPTO}','Septo interventricular'],
-    ['{PAREDE}','Parede posterior'],['{ASC}','Aorta ascendente'],['{VOL4C}','Volume 4 câmaras'],
+    ['{PAREDE}','Parede posterior'],['{ASC}','Aorta ascendente'],['{STRAIN}','Strain longitudinal VE'],['{VOL4C}','Volume 4 câmaras'],
     ['{VOL2C}','Volume 2 câmaras'],['{FE}','FE Simpson'],['{FE_S}','FE Simpson (alternativa)'],['{PSVD}','Pressão sistólica VD'],['{VELAO}','Velocidade aórtica'],
     ['{VMAXAO}','Vmax Ao (estenose aórtica)'],['{GMAO}','GM Ao (estenose aórtica)'],['{VTIAO}','VTI Ao (estenose aórtica)']
   ]},
@@ -3982,6 +4168,82 @@ function renderClinicas(){
     </div>`;
 }
 
+// ============================================================
+// MÉDICOS
+// ============================================================
+async function carregarMedicos(){
+  const { data } = await supa.from('medicos').select('*').order('nome');
+  medicos = data || [];
+}
+
+async function salvarMedico(){
+  const nome = document.getElementById('me_nome').value.trim();
+  if (!nome) { alert('Informe o nome do médico.'); return; }
+  const payload = {
+    user_id: _userId,
+    nome,
+    crm: document.getElementById('me_crm').value.trim() || null,
+    especialidade: document.getElementById('me_especialidade').value.trim() || null,
+  };
+  if (_medicoEditandoId) {
+    await supa.from('medicos').update(payload).eq('id', _medicoEditandoId);
+  } else {
+    await supa.from('medicos').insert(payload);
+  }
+  fecharModalMedico();
+  await carregarMedicos();
+  renderMedicos();
+  renderSeletorMedicos();
+  toast('Médico salvo!', 'ok');
+}
+
+async function deletarMedico(id){
+  if (!confirm('Remover este médico?')) return;
+  await supa.from('medicos').delete().eq('id', id);
+  await carregarMedicos();
+  renderMedicos();
+  renderSeletorMedicos();
+}
+
+function abrirModalMedico(id){
+  _medicoEditandoId = id || null;
+  const m = id ? medicos.find(x => x.id === id) : null;
+  document.getElementById('me_modal_titulo').textContent = m ? 'Editar médico' : 'Novo médico';
+  document.getElementById('me_nome').value          = m?.nome || '';
+  document.getElementById('me_crm').value           = m?.crm || '';
+  document.getElementById('me_especialidade').value = m?.especialidade || '';
+  document.getElementById('modal_medico').style.display = 'flex';
+  setTimeout(() => document.getElementById('me_nome').focus(), 50);
+}
+
+function fecharModalMedico(){
+  document.getElementById('modal_medico').style.display = 'none';
+}
+
+function renderMedicos(){
+  const grid = document.getElementById('me_grid');
+  if (!grid) return;
+  const cards = medicos.map(m => {
+    const meta = [m.crm ? 'CRM ' + m.crm : '', m.especialidade || ''].filter(Boolean).join('  ·  ');
+    return `
+    <div class="me-card">
+      <div class="me-info-blk">
+        <div class="me-nome">${m.nome}</div>
+        ${meta ? `<div class="cl-meta">${meta}</div>` : ''}
+      </div>
+      <div class="cl-acts">
+        <button class="cl-btn" onclick="abrirModalMedico('${m.id}')">Editar</button>
+        <button class="cl-btn danger" onclick="deletarMedico('${m.id}')">Remover</button>
+      </div>
+    </div>`;
+  }).join('');
+  grid.innerHTML = cards + `
+    <div class="cl-nova" onclick="abrirModalMedico()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Novo médico
+    </div>`;
+}
+
 function renderSeletorClinica(){
   ['n_clinica', 'e_clinica'].forEach(id => {
     const sel = document.getElementById(id);
@@ -3991,6 +4253,116 @@ function renderSeletorClinica(){
       clinicas.map(cl => `<option value="${cl.id}">${cl.nome}</option>`).join('');
     sel.value = val;
   });
+}
+
+function renderSeletorMedicos(){
+  const drop = document.getElementById('n_medico_drop');
+  if (drop && drop.style.display !== 'none') _cboMedicoFiltrar();
+}
+
+async function resolverMedicoPorNome(nomeDigitado){
+  const nome = (nomeDigitado || '').trim();
+  if (!nome) return null;
+  const existente = medicos.find(m => (m.nome || '').trim().toLowerCase() === nome.toLowerCase());
+  if (existente) return existente.id;
+  // Cadastro rápido: nome novo digitado direto no formulário de exame
+  const { data: ins, error } = await supa.from('medicos').insert({ user_id: _userId, nome }).select().single();
+  if (error) { console.error('Erro ao cadastrar médico:', error); toast('Não foi possível cadastrar o médico', 'warn'); return null; }
+  medicos.push(ins);
+  medicos.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
+  renderSeletorMedicos();
+  toast(`Médico "${nome}" cadastrado`, 'ok');
+  return ins.id;
+}
+
+// ---- Combobox de busca/seleção do médico solicitante ----
+let _cboMedico = { itens: [], idx: -1, novo: false, texto: '' };
+
+function _cboMedicoFiltrar(){
+  const input = document.getElementById('n_medico');
+  const q = _norm(input.value);
+  _cboMedico.texto = input.value.trim();
+  _cboMedico.itens = medicos.filter(m =>
+    !q || _norm(m.nome).includes(q) || _norm(m.crm||'').includes(q) || _norm(m.especialidade||'').includes(q)
+  );
+  _cboMedico.novo = !!_cboMedico.texto && !medicos.some(m => (m.nome||'').trim().toLowerCase() === _cboMedico.texto.toLowerCase());
+  _cboMedico.idx = -1;
+  _cboMedicoRender();
+}
+
+function _cboMedicoRender(){
+  const drop = document.getElementById('n_medico_drop');
+  if (!drop) return;
+  const linhas = _cboMedico.itens.map((m, i) => {
+    const meta = [m.crm ? 'CRM ' + m.crm : '', m.especialidade || ''].filter(Boolean).join('  ·  ');
+    return `<div class="combo-item${i===_cboMedico.idx?' active':''}" onmousedown="event.preventDefault();_cboMedicoEscolher(${i})">
+      <div class="combo-item-nome">${m.nome}</div>
+      ${meta ? `<div class="combo-item-meta">${meta}</div>` : ''}
+    </div>`;
+  }).join('');
+  const novoIdx = _cboMedico.itens.length;
+  const novoHTML = _cboMedico.novo
+    ? `<div class="combo-item combo-novo${novoIdx===_cboMedico.idx?' active':''}" onmousedown="event.preventDefault();_cboMedicoCriar()">+ Cadastrar "${_cboMedico.texto}"</div>`
+    : '';
+  drop.innerHTML = (linhas + novoHTML) || `<div class="combo-empty">Nenhum médico cadastrado ainda</div>`;
+  drop.style.display = 'block';
+}
+
+function abrirComboMedico(){ _cboMedicoFiltrar(); }
+
+function fecharComboMedico(){
+  const drop = document.getElementById('n_medico_drop');
+  if (drop) drop.style.display = 'none';
+  _cboMedico.idx = -1;
+}
+
+let _cboMedicoBlurTimer = null;
+function fecharComboMedicoDelay(){
+  clearTimeout(_cboMedicoBlurTimer);
+  _cboMedicoBlurTimer = setTimeout(fecharComboMedico, 150);
+}
+
+function _cboMedicoScroll(){
+  const drop = document.getElementById('n_medico_drop');
+  const ativo = drop && drop.querySelector('.combo-item.active');
+  if (ativo) ativo.scrollIntoView({ block: 'nearest' });
+}
+
+function _cboMedicoTotal(){
+  return _cboMedico.itens.length + (_cboMedico.novo ? 1 : 0);
+}
+
+function onComboMedicoKey(ev){
+  const drop = document.getElementById('n_medico_drop');
+  if (!drop || drop.style.display === 'none') { if (ev.key === 'ArrowDown') abrirComboMedico(); return; }
+  const total = _cboMedicoTotal();
+  if (ev.key === 'ArrowDown') { ev.preventDefault(); if (total) _cboMedico.idx = (_cboMedico.idx + 1) % total; _cboMedicoRender(); _cboMedicoScroll(); }
+  else if (ev.key === 'ArrowUp') { ev.preventDefault(); if (total) _cboMedico.idx = (_cboMedico.idx - 1 + total) % total; _cboMedicoRender(); _cboMedicoScroll(); }
+  else if (ev.key === 'Enter') {
+    if (_cboMedico.idx >= 0) { ev.preventDefault(); _cboMedicoConfirmarAtivo(); }
+    else fecharComboMedico();
+  }
+  else if (ev.key === 'Escape') { fecharComboMedico(); }
+}
+
+function _cboMedicoConfirmarAtivo(){
+  if (_cboMedico.idx < _cboMedico.itens.length) _cboMedicoEscolher(_cboMedico.idx);
+  else if (_cboMedico.novo) _cboMedicoCriar();
+}
+
+function _cboMedicoEscolher(i){
+  const m = _cboMedico.itens[i];
+  if (!m) return;
+  document.getElementById('n_medico').value = m.nome;
+  fecharComboMedico();
+}
+
+async function _cboMedicoCriar(){
+  const nome = _cboMedico.texto;
+  fecharComboMedico();
+  const id = await resolverMedicoPorNome(nome);
+  const m = id ? medicos.find(x => x.id === id) : null;
+  document.getElementById('n_medico').value = m?.nome || nome;
 }
 
 function fmtD(iso){ if(!iso)return'—'; const[y,m,d]=iso.split('-'); return`${d}/${m}/${y}`; }
