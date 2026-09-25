@@ -134,7 +134,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* ===== LISTA ===== */
 .lista-wrap{background:white;border-radius:10px;overflow:hidden;border:1px solid #e8e8e8}
-.lista-hdr,.lista-row{display:grid;grid-template-columns:32px minmax(180px,2fr) 80px 85px 90px 50px;align-items:center;gap:8px;padding:8px 10px}
+.lista-hdr,.lista-row{display:grid;grid-template-columns:32px minmax(160px,1.8fr) 230px 80px 85px 90px 50px;align-items:center;gap:8px;padding:8px 10px}
 .lista-hdr{border-bottom:1px solid #e8e8e8;font-size:9px;color:#94a3b8;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px}
 .lista-row{border-bottom:1px solid #f3f3f3;cursor:pointer;transition:background .1s}
 .lista-row:hover{background:#fafafa}
@@ -148,6 +148,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pac-sub{font-size:10.5px;color:#94a3b8;margin-top:1px}
 .cell-id{font-size:11px;color:#64748b;font-weight:600}
 .cell-dt{font-size:10.5px;color:#94a3b8}
+.cell-med{font-size:11px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chip{display:inline-block;padding:2px 8px;border-radius:5px;font-size:10.5px;font-weight:500;border:1px solid #e5e7eb;background:white;color:#475569;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .arr{color:#cbd5e1;font-size:16px;font-weight:300;padding-right:2px}
 .del-btn{background:none;border:none;cursor:pointer;font-size:13px;opacity:0;padding:2px 4px;border-radius:4px;transition:opacity .15s,background .15s}
@@ -509,7 +510,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px">
       <div class="busca" id="busca_inbox_wrap" style="flex:1;min-width:220px;margin-bottom:0">
         <svg class="busca-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="search" id="busca_inbox" placeholder="Buscar paciente, registro…" oninput="onBusca('inbox',this.value)" onkeydown="onBuscaKey(event,'inbox')" autocomplete="off">
+        <input type="search" id="busca_inbox" placeholder="Buscar paciente, registro, contexto clínico…" oninput="onBusca('inbox',this.value)" onkeydown="onBuscaKey(event,'inbox')" autocomplete="off">
         <button class="busca-clear" onclick="limparBusca('inbox')" title="Limpar busca (Esc)">×</button>
       </div>
       <div class="fclin">
@@ -518,7 +519,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
     </div>
     <div class="lista-wrap">
-      <div class="lista-hdr"><div></div><div>Paciente</div><div>Registro</div><div>Data</div><div>Status</div><div></div></div>
+      <div class="lista-hdr"><div></div><div>Paciente</div><div>Médico</div><div>Registro</div><div>Data</div><div>Status</div><div></div></div>
       <div id="lista_inbox"></div>
       <div id="inbox_vz" class="empty-st" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg><p>Nenhum exame pendente.</p></div>
     </div>
@@ -529,7 +530,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="pg-hdr"><h1>Concluídos</h1></div>
     <div class="busca" id="busca_conc_wrap">
       <svg class="busca-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="search" id="busca_conc" placeholder="Buscar paciente, registro…" oninput="onBusca('conc',this.value)" onkeydown="onBuscaKey(event,'conc')" autocomplete="off">
+      <input type="search" id="busca_conc" placeholder="Buscar paciente, registro, contexto clínico…" oninput="onBusca('conc',this.value)" onkeydown="onBuscaKey(event,'conc')" autocomplete="off">
       <button class="busca-clear" onclick="limparBusca('conc')" title="Limpar busca (Esc)">×</button>
     </div>
     <div class="fin-filtros">
@@ -570,7 +571,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
     </div>
     <div class="lista-wrap">
-      <div class="lista-hdr"><div></div><div>Paciente</div><div>Registro</div><div>Data</div><div>Status</div><div></div></div>
+      <div class="lista-hdr"><div></div><div>Paciente</div><div>Médico</div><div>Registro</div><div>Data</div><div>Status</div><div></div></div>
       <div id="lista_conc"></div>
       <div id="conc_vz" class="empty-st" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><p>Nenhum laudo concluído ainda.</p></div>
     </div>
@@ -1420,7 +1421,7 @@ document.addEventListener('DOMContentLoaded', () => {
       await carregarExames();
       _dadosCarregados = true;
       setDataInput('n_data', hoje());
-      renderListas();
+      concSetMesAtual(); // Concluídos abre por padrão filtrado no mês atual (já chama renderListas())
       atualizarStats();
     } else {
       _userId = null;
@@ -3262,7 +3263,7 @@ function _norm(s){
 }
 function _matchBusca(e,q){
   if(!q) return true;
-  return _norm(e.nome).includes(q) || _norm(e.registro).includes(q);
+  return _norm(e.nome).includes(q) || _norm(e.registro).includes(q) || _norm(e.obs_clinica).includes(q);
 }
 function _ymdLocal(iso){
   const d=new Date(iso);
@@ -4086,6 +4087,7 @@ function rowHTML(e){
   const cor=cl?.cor?{bg:cl.cor+'22',fg:cl.cor}:avaCor(e.nome);
   const idade=calcIdade(e.dn);
   const sexoAbrev=e.sexo==='Masculino'?'M':e.sexo==='Feminino'?'F':null;
+  const med=e.medico_id?medicos.find(m=>m.id===e.medico_id):null;
   const subParts=[idade!=null?idade+' anos':null, sexoAbrev, cl?.nome||null].filter(Boolean);
   return `<div class="lista-row" onclick="abrirAnalise('${e.id}')">
     <div><span class="u-bar ${uc}"></span></div>
@@ -4096,6 +4098,7 @@ function rowHTML(e){
         ${subParts.length?`<div class="pac-sub">${subParts.join(' · ')}</div>`:''}
       </div>
     </div>
+    <div><div class="cell-med">${med?.nome||'—'}</div></div>
     <div><div class="cell-id">${e.registro||'—'}</div></div>
     <div><div class="cell-dt">${fmtD(e.data)}</div></div>
     <div><span class="badge ${bc}"><span class="bdot"></span>${bl}</span></div>
@@ -4119,9 +4122,19 @@ function atualizarStats(){
 // HELPERS
 // ============================================================
 async function carregarExames(){
-  const { data, error } = await supa.from('exames').select('id, dados').order('criado_em', { ascending: false });
-  if (error) { console.error(error); return; }
-  exames = (data||[]).map(r => ({ ...r.dados, id: r.id }));
+  // O Supabase limita cada resposta a um número máximo de linhas (por padrão 1000),
+  // então paginamos com .range() até trazer todos os exames, não só os primeiros 1000.
+  const PAGE = 1000;
+  let todos = [];
+  let from = 0;
+  while (true) {
+    const { data, error } = await supa.from('exames').select('id, dados').order('criado_em', { ascending: false }).range(from, from + PAGE - 1);
+    if (error) { console.error(error); break; }
+    todos = todos.concat(data || []);
+    if (!data || data.length < PAGE) break;
+    from += PAGE;
+  }
+  exames = todos.map(r => ({ ...r.dados, id: r.id }));
 }
 
 async function salvarLocal(){
