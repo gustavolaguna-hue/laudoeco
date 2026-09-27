@@ -993,6 +993,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="m-row"><span class="m-lbl">Onda S´</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_vd_onds" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">cm/s</span></div>
           <div class="m-row"><span class="m-lbl">FAC</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_vd_fac" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">%</span></div>
           <div class="m-row"><span class="m-lbl">dP/dT</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_vd_dpdt" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mmHg/s</span></div>
+          <div class="m-row"><span class="m-lbl">VD basal</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_vd_basal" step="0.1" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mm</span></div>
+          <div class="m-row"><span class="m-lbl">VD médio</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_vd_medio" step="0.1" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mm</span></div>
+          <div class="m-row"><span class="m-lbl">VD longit.</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_vd_long" step="0.1" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mm</span></div>
         </div>
         <div class="sec">
           <div class="sec-ttl">Via de Saída do VE</div>
@@ -1673,6 +1676,9 @@ function atualizarTexto(fid){
         .replace('{SEPTO}',  mv('m_septo'))
         .replace('{PAREDE}', mv('m_parede'))
         .replace('{ASC}',    mv('m_asc'))
+        .replace('{VDBASAL}', mv('m_vd_basal'))
+        .replace('{VDMEDIO}', mv('m_vd_medio'))
+        .replace('{VDLONG}',  mv('m_vd_long'))
         .replace('{STRAIN}', (()=>{
           const raw = (document.getElementById('m_ve_strain')?.value || '').trim();
           if (!raw) return '...';
@@ -1687,6 +1693,9 @@ function atualizarTexto(fid){
         .replace('{FE}',     mv('m_fe_simp'))
         .replace('{FE_S}',   mv('m_fe_simp'))
         .replace('{PSVD}',   mc('c_psvd'))
+        .replace('{TAPSE}',   mv('m_vd_tapse'))
+        .replace('{ONDASVD}', mv('m_vd_onds'))
+        .replace('{FAC}',     mv('m_vd_fac'))
         .replace('{VELAO}',  mv('m_vel_ao'))
         .replace('{VMAXAO}', mv('m_ea_vmax'))
         .replace('{GMAO}',   mv('m_ea_gm'))
@@ -1763,6 +1772,13 @@ const REF_CONFIG_DEFAULT = {
   strain:    { limitrofeMin: 16, limitrofeMax: 18 },
   eIdade:    { septal: { jovem: 7, meia: 6, idoso: 6 }, lateral: { jovem: 10, meia: 8, idoso: 7 } },
   psvd:      { corte: 35 },
+  vdBasal:   { max: 41, leve: 44, moderado: 49 },
+  vdMedio:   { max: 35, leve: 38, moderado: 42 },
+  vdLong:    { max: 82, leve: 89, moderado: 96 },
+  tapse:     { min: 17, leve: 13, moderado: 10 },
+  vdOndaS:   { min: 9.5, leve: 7.2, moderado: 5.0 },
+  fac:       { min: 35, leve: 29, moderado: 22 },
+  dpdtVd:    { min: 400 },
   ea:        { min: 0.8, max: 2.0 },
   eeMedio:   { corte: 14 },
   eeSeptal:  { corte: 15 },
@@ -1840,6 +1856,40 @@ function buildRefMedidas(){
   },
   // e´ septal e e´ lateral — cortes de relaxamento alterado ajustados por idade (ASE 2025, Tabela 6)
   // <20 anos usa a mesma faixa de 20-39 (sem tabela específica para esse grupo)
+  m_vd_basal: {
+    unidade: ' mm',
+    ambos: { abs: { max: C.vdBasal.max, maxIncl: false } },
+    tiers: [ { max: C.vdBasal.leve, nivel: 'leve' }, { max: C.vdBasal.moderado, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ]
+  },
+  m_vd_medio: {
+    unidade: ' mm',
+    ambos: { abs: { max: C.vdMedio.max, maxIncl: false } },
+    tiers: [ { max: C.vdMedio.leve, nivel: 'leve' }, { max: C.vdMedio.moderado, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ]
+  },
+  m_vd_long: {
+    unidade: ' mm',
+    ambos: { abs: { max: C.vdLong.max, maxIncl: false } },
+    tiers: [ { max: C.vdLong.leve, nivel: 'leve' }, { max: C.vdLong.moderado, nivel: 'moderado' }, { max: Infinity, nivel: 'importante' } ]
+  },
+  m_vd_tapse: {
+    unidade: ' mm',
+    ambos: { abs: { min: C.tapse.min, minIncl: false } },
+    tiersMin: [ { min: C.tapse.leve, nivel: 'leve' }, { min: C.tapse.moderado, nivel: 'moderado' }, { min: -Infinity, nivel: 'importante' } ]
+  },
+  m_vd_onds: {
+    unidade: ' cm/s',
+    ambos: { abs: { min: C.vdOndaS.min, minIncl: false } },
+    tiersMin: [ { min: C.vdOndaS.leve, nivel: 'leve' }, { min: C.vdOndaS.moderado, nivel: 'moderado' }, { min: -Infinity, nivel: 'importante' } ]
+  },
+  m_vd_fac: {
+    unidade: ' %',
+    ambos: { abs: { min: C.fac.min, minIncl: false } },
+    tiersMin: [ { min: C.fac.leve, nivel: 'leve' }, { min: C.fac.moderado, nivel: 'moderado' }, { min: -Infinity, nivel: 'importante' } ]
+  },
+  m_vd_dpdt: {
+    unidade: ' mmHg/s',
+    ambos: { abs: { min: C.dpdtVd.min } }
+  },
   m_diast_esep: {
     unidade: ' cm/s',
     porIdadeE: 'septal'
@@ -1917,6 +1967,25 @@ const REF_CONFIG_GROUPS = [
       ]}
   ]},
   { titulo: 'Ventrículo direito', linhas: [
+      { titulo: 'VD diâmetro basal', unidade: 'mm', campos: [
+          { path: 'vdBasal.max', label: 'Normal até' }, { path: 'vdBasal.leve', label: 'Leve até' }, { path: 'vdBasal.moderado', label: 'Moderado até' }
+      ]},
+      { titulo: 'VD diâmetro médio (mid-ventricular)', unidade: 'mm', campos: [
+          { path: 'vdMedio.max', label: 'Normal até' }, { path: 'vdMedio.leve', label: 'Leve até' }, { path: 'vdMedio.moderado', label: 'Moderado até' }
+      ]},
+      { titulo: 'VD diâmetro longitudinal', unidade: 'mm', campos: [
+          { path: 'vdLong.max', label: 'Normal até' }, { path: 'vdLong.leve', label: 'Leve até' }, { path: 'vdLong.moderado', label: 'Moderado até' }
+      ]},
+      { titulo: 'TAPSE', unidade: 'mm', campos: [
+          { path: 'tapse.min', label: 'Normal acima de' }, { path: 'tapse.leve', label: 'Leve acima de' }, { path: 'tapse.moderado', label: 'Moderado acima de' }
+      ]},
+      { titulo: 'Onda S´ (VD)', unidade: 'cm/s', campos: [
+          { path: 'vdOndaS.min', label: 'Normal acima de' }, { path: 'vdOndaS.leve', label: 'Leve acima de' }, { path: 'vdOndaS.moderado', label: 'Moderado acima de' }
+      ]},
+      { titulo: 'FAC', unidade: '%', campos: [
+          { path: 'fac.min', label: 'Normal acima de' }, { path: 'fac.leve', label: 'Leve acima de' }, { path: 'fac.moderado', label: 'Moderado acima de' }
+      ]},
+      { titulo: 'dP/dT do VD', unidade: 'mmHg/s', campos: [ { path: 'dpdtVd.min', label: 'Alterado abaixo de' } ]},
       { titulo: 'PSVD — Pressão sistólica de VD', unidade: 'mmHg', campos: [ { path: 'psvd.corte', label: 'Alterado a partir de' } ]}
   ]}
 ];
@@ -2066,6 +2135,11 @@ function avaliarMedida(fieldId, valor){
   const excedeuMax = abs && abs.max != null && (abs.maxIncl === false ? valor >= abs.max : valor > abs.max);
   if (alterado && tiers && excedeuMax) {
     for (const t of tiers) { if (valor <= t.max) { nivel = t.nivel; break; } }
+  }
+  const tiersMin = bloco.tiersMin || ref.tiersMin;
+  const excedeuMin = abs && abs.min != null && (abs.minIncl === false ? valor <= abs.min : valor < abs.min);
+  if (alterado && tiersMin && excedeuMin) {
+    for (const t of tiersMin) { if (valor > t.min) { nivel = t.nivel; break; } }
   }
 
   let textoRange = '';
@@ -2636,7 +2710,7 @@ function carregarForm(e){
    'm_vol4c','m_vol2c','m_vad','m_fe_simp','m_psvd','m_vel_ao','m_vsve_d','m_vsve_vti','m_vsve_fc',
    'm_ea_vmax','m_ea_gm','m_ea_vti',
    'm_ve_mapse','m_ve_onds','m_ve_strain',
-   'm_vd_tapse','m_vd_onds','m_vd_fac','m_vd_dpdt',
+   'm_vd_tapse','m_vd_onds','m_vd_fac','m_vd_dpdt','m_vd_basal','m_vd_medio','m_vd_long',
    'm_diast_e','m_diast_a','m_diast_esep','m_diast_elat',
    'm_vmax_it',
    'm_pisa_vena','m_pisa_raio','m_pisa_val','m_pisa_vmax','m_pisa_vti'].forEach(id=>{
@@ -2682,7 +2756,7 @@ function coletarMedidas(){
    'm_vol4c','m_vol2c','m_vad','m_fe_simp','m_psvd','m_vel_ao','m_vsve_d','m_vsve_vti','m_vsve_fc',
    'm_ea_vmax','m_ea_gm','m_ea_vti',
    'm_ve_mapse','m_ve_onds','m_ve_strain',
-   'm_vd_tapse','m_vd_onds','m_vd_fac','m_vd_dpdt',
+   'm_vd_tapse','m_vd_onds','m_vd_fac','m_vd_dpdt','m_vd_basal','m_vd_medio','m_vd_long',
    'm_diast_e','m_diast_a','m_diast_esep','m_diast_elat',
    'm_vmax_it','m_pad','m_dp_dt',
    'm_pisa_vena','m_pisa_raio','m_pisa_val','m_pisa_vmax','m_pisa_vti'].forEach(id=>{
@@ -4186,8 +4260,8 @@ const VARS = [
   {grupo:'Medidas brutas', items:[
     ['{DAO}','Diâmetro aorta'],['{DAE}','Diâmetro átrio esquerdo'],['{DDVD}','DD ventrículo direito'],
     ['{DDVE}','DD ventrículo esquerdo'],['{DSVE}','DS ventrículo esquerdo'],['{SEPTO}','Septo interventricular'],
-    ['{PAREDE}','Parede posterior'],['{ASC}','Aorta ascendente'],['{STRAIN}','Strain longitudinal VE'],['{VOL4C}','Volume 4 câmaras'],
-    ['{VOL2C}','Volume 2 câmaras'],['{FE}','FE Simpson'],['{FE_S}','FE Simpson (alternativa)'],['{PSVD}','Pressão sistólica VD'],['{VELAO}','Velocidade aórtica'],
+    ['{PAREDE}','Parede posterior'],['{ASC}','Aorta ascendente'],['{VDBASAL}','Diâmetro basal do VD'],['{VDMEDIO}','Diâmetro médio do VD'],['{VDLONG}','Diâmetro longitudinal do VD'],['{STRAIN}','Strain longitudinal VE'],['{VOL4C}','Volume 4 câmaras'],
+    ['{VOL2C}','Volume 2 câmaras'],['{FE}','FE Simpson'],['{FE_S}','FE Simpson (alternativa)'],['{PSVD}','Pressão sistólica VD'],['{TAPSE}','TAPSE'],['{ONDASVD}','Onda S´ do VD'],['{FAC}','FAC do VD'],['{VELAO}','Velocidade aórtica'],
     ['{VMAXAO}','Vmax Ao (estenose aórtica)'],['{GMAO}','GM Ao (estenose aórtica)'],['{VTIAO}','VTI Ao (estenose aórtica)']
   ]},
   {grupo:'Valores calculados', items:[
