@@ -1072,6 +1072,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div class="ff"><label>Cor da clínica</label><input type="color" id="cl_cor" value="#1d4ed8" style="height:38px;padding:2px;width:100%"></div>
         <div class="ff"><label>Valor particular <span class="un">R$</span></label><input type="number" id="cl_valor" step="0.01" placeholder="ex: 350.00"></div>
       </div>
+      <div class="ff" style="margin-top:10px"><label>Valor fixo mensal <span class="un">R$</span> <span style="font-size:10px;color:#94a3b8;font-weight:400">(opcional — dividido entre os exames do mês; substitui o valor particular)</span></label><input type="number" id="cl_valor_fixo" step="0.01" placeholder="ex: 3000.00"></div>
       <div class="ff" style="margin-top:10px"><label>Endereço</label><input type="text" id="cl_endereco" placeholder="ex: Rua das Flores, 123"></div>
       <div class="frow" style="margin-top:10px">
         <div class="ff"><label>Bairro</label><input type="text" id="cl_bairro" placeholder="ex: Centro"></div>
@@ -3499,13 +3500,44 @@ function _finClinicaInfo(id){
 // senão cai no valor padrão (valor_particular) cadastrado na clínica.
 function _valorExame(e){
   if(e.valor_exame!=null && e.valor_exame!=='' && !isNaN(e.valor_exame)) return Number(e.valor_exame);
+  return _valorPadraoExame(e);
+}
+// Clínica com valor fixo mensal: o valor é dividido pelo nº de exames da clínica
+// naquele mês (todos os exames do mês, independente do período filtrado ou do status).
+let _fixoCont = null;
+function _fixoReset(){ _fixoCont = null; }
+function _fixoMensal(clinicaId){
+  const v = parseFloat(_finClinicaInfo(clinicaId).valor_fixo_mensal);
+  return v>0 ? v : 0;
+}
+function _fixoContagem(clinicaId, ym){
+  if(!_fixoCont){
+    _fixoCont = {};
+    exames.forEach(e=>{
+      if(!e.clinica_id || !_fixoMensal(e.clinica_id)) return;
+      const d = _dataConc(e); if(!d) return;
+      const k = e.clinica_id+'|'+d.slice(0,7);
+      _fixoCont[k] = (_fixoCont[k]||0)+1;
+    });
+  }
+  return _fixoCont[clinicaId+'|'+ym] || 0;
+}
+// Valor padrão do exame: fração do fixo mensal (se a clínica tiver) ou valor particular.
+function _valorPadraoExame(e){
+  const fixo = _fixoMensal(e.clinica_id);
+  if(fixo){
+    const d = _dataConc(e);
+    const n = d ? _fixoContagem(e.clinica_id, d.slice(0,7)) : 0;
+    return n ? fixo/n : 0;
+  }
   return _finClinicaInfo(e.clinica_id).valor_particular || 0;
 }
 
 // ── Agregação (equivalente a get_financeiro_data do LaudoMAPA, porém client-side) ──
 function calcularFinanceiro(ini, fim){
   const porDiaMap = {}, porDiaClinMap = {}, porClinMap = {};
-  exames.filter(e=>e.status==='concluido').forEach(e=>{
+  _fixoReset();
+  exames.forEach(e=>{
     const dia = _dataConc(e);
     if(!dia) return;
     if(ini && dia<ini) return;
@@ -3527,6 +3559,9 @@ function calcularFinanceiro(ini, fim){
     porClinMap[kc].exames++;
     porClinMap[kc].receita += valor;
   });
+  Object.values(porClinMap).forEach(pc=>{
+    if(_fixoMensal(pc.chave)) pc.valor_por_exame = pc.exames ? pc.receita/pc.exames : 0;
+  });
   const por_dia = Object.keys(porDiaMap).sort().map(k=>({data:k, exames:porDiaMap[k].exames, receita:porDiaMap[k].receita}));
   const por_dia_clinica = Object.values(porDiaClinMap).sort((a,b)=> a.data===b.data ? b.exames-a.exames : (a.data<b.data?-1:1));
   const por_clinica = Object.values(porClinMap).sort((a,b)=>b.receita-a.receita);
@@ -3539,12 +3574,13 @@ function calcularFinanceiro(ini, fim){
 
 // ── Lista detalhada (equivalente a get_relatorio_exames) ──
 function listarExamesRelatorio(clinicaId, ini, fim){
-  return exames.filter(e=>e.status==='concluido')
+  _fixoReset();
+  return exames
     .filter(e=> !clinicaId || e.clinica_id===clinicaId)
     .map(e=>{
       const dia = _dataConc(e);
       const c = _finClinicaInfo(e.clinica_id);
-      const padrao = c.valor_particular || 0;
+      const padrao = _valorPadraoExame(e);
       const personalizado = e.valor_exame!=null && e.valor_exame!=='' && !isNaN(e.valor_exame);
       return {
         id: e.id,
@@ -3981,7 +4017,7 @@ function editarValorExame(examId, tdEl){
   if(tdEl.querySelector('input')) return;
   const ex = exames.find(e=>e.id===examId);
   if(!ex) return;
-  const padrao = _finClinicaInfo(ex.clinica_id).valor_particular || 0;
+  const padrao = _valorPadraoExame(ex);
   const atual = _valorExame(ex);
 
   tdEl.classList.add('editando');
@@ -4417,6 +4453,9 @@ async function salvarClinica(){
     cep:      document.getElementById('cl_cep').value.trim() || null,
     telefone: document.getElementById('cl_telefone').value.trim() || null,
   };
+  const _fixoVal = parseFloat(document.getElementById('cl_valor_fixo').value) || null;
+  const _clEdit = _clinicaEditandoId ? clinicas.find(c => c.id === _clinicaEditandoId) : null;
+  if (_fixoVal !== null || (_clEdit && 'valor_fixo_mensal' in _clEdit)) payload.valor_fixo_mensal = _fixoVal;
   let clinicaId = _clinicaEditandoId;
   if (_clinicaEditandoId) {
     await supa.from('clinicas').update(payload).eq('id', _clinicaEditandoId);
@@ -4469,6 +4508,7 @@ function abrirModalClinica(id){
   document.getElementById('cl_prefixo').value        = cl?.prefixo || '';
   document.getElementById('cl_cor').value            = cl?.cor || '#1d4ed8';
   document.getElementById('cl_valor').value          = cl?.valor_particular || '';
+  document.getElementById('cl_valor_fixo').value     = cl?.valor_fixo_mensal || '';
   document.getElementById('cl_endereco').value       = cl?.endereco || '';
   document.getElementById('cl_bairro').value         = cl?.bairro || '';
   document.getElementById('cl_cidade').value         = cl?.cidade || '';
@@ -4505,7 +4545,7 @@ function renderClinicas(){
           <span class="cl-nome">${cl.nome}</span>
           ${cl.prefixo ? `<span class="cl-prefixo" style="background:${cor}18;color:${cor}">${cl.prefixo}0000</span>` : ''}
           ${cl.codigo_registro ? `<span class="cl-prefixo">${cl.codigo_registro}</span>` : ''}
-          ${cl.valor_particular ? `<span class="cl-valor-badge">R$ ${parseFloat(cl.valor_particular).toFixed(2).replace('.',',')}</span>` : ''}
+          ${cl.valor_fixo_mensal ? `<span class="cl-valor-badge">R$ ${parseFloat(cl.valor_fixo_mensal).toFixed(2).replace('.',',')} / mês</span>` : (cl.valor_particular ? `<span class="cl-valor-badge">R$ ${parseFloat(cl.valor_particular).toFixed(2).replace('.',',')}</span>` : '')}
         </div>
         ${cl.nome_completo && cl.nome_completo !== cl.nome ? `<div class="cl-meta" style="color:#475569;font-size:11.5px">${cl.nome_completo}</div>` : ''}
         ${meta ? `<div class="cl-meta">${meta}</div>` : ''}
