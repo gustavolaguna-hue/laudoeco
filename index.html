@@ -1678,15 +1678,12 @@ function atualizarTexto(fid){
   const slashContCodes = partsRaw.slice(1).map(p => parseInt(p.trim())).filter(n => !isNaN(n) && n > 0);
 
   const code = parseInt(rawVal);
-  let texto = '';
-
-  if (!isNaN(code) && code > 0) {
-    texto = lookup(cfg.tbl, code) || '';
-    // substituir variáveis dinâmicas
-    if (atual) {
+  // Substitui variáveis {XXX} (medidas/cálculos) — usado no texto principal E nos textos de contração
+  const subVars = (t) => {
+    if (!atual) return t;
       const mv = id => (document.getElementById(id)?.value || '').replace('.',',') || '...';
       const mc = id => { const t = document.getElementById(id)?.textContent?.trim(); return (t && t !== '—') ? t : '...'; };
-      texto = texto
+      return t
         // Medidas brutas
         .replace('{DAO}',    mv('m_dao'))
         .replace('{DAE}',    mv('m_dae'))
@@ -1739,7 +1736,11 @@ function atualizarTexto(fid){
         .replace('{DVI}',    mc('c_ea_dvi'))
         .replace('{AVA}',    mc('c_ea_ava'))
         .replace('{AVAI}',   mc('c_ea_avai'));
-    }
+  };
+  let texto = '';
+
+  if (!isNaN(code) && code > 0) {
+    texto = subVars(lookup(cfg.tbl, code) || '');
   }
 
   // Remove ponto final do texto principal
@@ -1749,7 +1750,7 @@ function atualizarTexto(fid){
   const contCodes = (modEl && parseInt(modEl.value) > 0)
     ? [parseInt(modEl.value), ...slashContCodes]
     : slashContCodes;
-  for (const modTxt of contCodes.map(c => lookup('CONTRACAO', c)).filter(Boolean)) {
+  for (const modTxt of contCodes.map(c => lookup('CONTRACAO', c)).filter(Boolean).map(subVars)) {
     texto = texto.replace(/\.\s*$/, ''); // remove ponto final antes de cada concatenação
     if (modTxt.startsWith('/')) {
       texto += modTxt; // mantém a barra, sem espaço
