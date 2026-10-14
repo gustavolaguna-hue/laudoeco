@@ -272,6 +272,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .c-val.alt-moderado{color:#7e22ce;font-weight:600}
 .c-val.alt-importante{color:#b91c1c;font-weight:600}
 .c-val.alt{color:#b45309;font-weight:600}
+.ea-grau-sel{font-size:10.5px;padding:1px 3px;border:1px solid #e2e8f0;border-radius:5px;background:#fff;color:#64748b;font-family:inherit;cursor:pointer;outline:none}
+.ea-grau-sel.ov{border-color:#94a3b8;color:#0f172a;font-weight:600}
 .geo-badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:700;margin-top:6px;text-align:center;width:100%;letter-spacing:.02em}
 .g-n{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
 .g-r{background:#fef3c7;color:#b45309;border:1px solid #fde68a}
@@ -308,6 +310,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .modal-x:hover{color:#0f172a;background:#f1f5f9}
 .modal-body{padding:16px 18px;overflow-y:auto;flex:1}
 .modal-foot{display:flex;justify-content:flex-end;gap:7px;padding:11px 18px;border-top:1px solid #e8e8e8;background:#fafafa;border-radius:0 0 12px 12px}
+/* Modal Novo exame – compacto, mais espaço p/ contexto clínico */
+#modal_novo .modal-box{max-width:600px;height:min(560px,92vh)}
+#modal_novo .modal-hdr{padding:9px 16px}
+#modal_novo .modal-body{padding:10px 16px;display:flex;flex-direction:column}
+#modal_novo .frow{gap:8px;margin-bottom:8px}
+#modal_novo .ff{gap:2px}
+#modal_novo .ff label{font-size:11px}
+#modal_novo .ff input,#modal_novo .ff select{padding:4px 7px;font-size:12.5px}
+#modal_novo .date-grp{padding:4px 7px}
+#modal_novo .date-grp input{font-size:12.5px;padding:0;border:none;background:transparent;box-sizing:content-box}
+#modal_novo .nv-r1{grid-template-columns:1fr 84px 168px}
+#modal_novo .nv-r3{grid-template-columns:1fr 168px 70px 70px}
+#modal_novo .date-grp{width:100%;box-sizing:border-box;justify-content:center;gap:2px}
+#modal_novo .date-grp input{width:28px}
+#modal_novo .date-grp input.dg-a{width:46px}
+#modal_novo .nv-r1 .ff,#modal_novo .nv-r3 .ff{min-width:0}
+#n_reg,#n_altura,#n_peso{width:100%;box-sizing:border-box}
+#modal_novo .nv-ctx{flex:1;min-height:150px}
+#modal_novo .nv-ctx textarea{flex:1;width:100%;min-height:130px;padding:6px 8px;border:1.5px solid #e5e0d6;border-radius:7px;font-size:11px;line-height:1.45;font-family:inherit;resize:none;outline:none;color:#0f172a;box-sizing:border-box}
+#modal_novo .modal-foot{padding:8px 16px}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
 .ff{display:flex;flex-direction:column;gap:3px}
 .ff:last-child{margin-bottom:0}
@@ -1021,6 +1043,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="m-row"><span class="m-lbl">VTI Ao</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_ea_vti" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">cm</span></div>
           <div class="calc-row" id="ea_gpdvi_row" style="display:none;margin-top:6px"><span class="c-lbl">GP Ao</span><span class="c-val" id="c_ea_gp">—</span><span class="c-lbl" id="ea_dvi_lbl" style="display:none;margin-left:12px">DVI</span><span class="c-val" id="c_ea_dvi" style="display:none">—</span></div>
           <div class="calc-row" id="ea_ava_row" style="display:none;margin-top:4px"><span class="c-lbl">AVA</span><span class="c-val" id="c_ea_ava">—</span><span class="c-lbl" id="ea_avai_lbl" style="display:none;margin-left:12px">AVAi</span><span class="c-val" id="c_ea_avai" style="display:none">—</span></div>
+          <div class="calc-row" id="ea_grau_row" style="display:none;margin-top:6px;align-items:center"><span class="c-lbl">Grau</span><span style="display:flex;align-items:center;gap:6px"><span class="c-val em" id="c_ea_grau">—</span><select id="m_ea_grau" class="ea-grau-sel" title="Grau da estenose: Automático (pior critério entre Vmax, GM, AVA e AVAi) ou definido manualmente" onchange="calcular()"><option value="">Auto</option><option value="normal">Sem estenose</option><option value="leve">Discreto</option><option value="moderado">Moderado</option><option value="importante">Importante</option></select></span></div>
         </div>
       </div><!-- /col3 -->
 
@@ -1133,8 +1156,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="modal-box">
     <div class="modal-hdr"><h2 id="modal_titulo">Novo exame</h2><button class="modal-x" onclick="fecharModalNovo()">×</button></div>
     <div class="modal-body">
-      <div class="ff"><label>Clínica</label><select id="n_clinica" onchange="onSelecionarClinicaNovo()"><option value="">— Sem clínica —</option></select></div>
-      <div class="frow" style="margin-top:10px">
+      <div class="frow nv-r1">
+        <div class="ff"><label>Clínica</label><select id="n_clinica" onchange="onSelecionarClinicaNovo()"><option value="">— Sem clínica —</option></select></div>
         <div class="ff"><label>Registro</label><input type="text" id="n_reg" placeholder="ex: A0001"></div>
         <div class="ff"><label>Data do exame <span class="req">*</span></label>
           <div class="date-grp" onclick="this.querySelector('input').focus()">
@@ -1147,10 +1170,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <input type="hidden" id="n_data">
         </div>
       </div>
-      <div class="frow" style="margin-top:10px;grid-template-columns:1fr">
+      <div class="frow" style="grid-template-columns:1fr">
         <div class="ff"><label>Nome do paciente <span class="req">*</span></label><input type="text" id="n_nome" placeholder="Nome completo" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
       </div>
-      <div class="frow">
+      <div class="frow nv-r3">
         <div class="ff"><label>Sexo</label><select id="n_sexo"><option value="">—</option><option>Masculino</option><option>Feminino</option></select></div>
         <div class="ff"><label>Data de nascimento</label>
           <div class="date-grp" onclick="this.querySelector('input').focus()">
@@ -1162,18 +1185,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           </div>
           <input type="hidden" id="n_dn">
         </div>
+        <div class="ff"><label>Altura <span class="un">cm</span></label><input type="number" id="n_altura" step="0.1" placeholder="170"></div>
+        <div class="ff"><label>Peso <span class="un">kg</span></label><input type="number" id="n_peso" step="0.1" placeholder="70"></div>
       </div>
-      <div class="frow">
-        <div class="ff"><label>Altura <span class="un">cm</span></label><input type="number" id="n_altura" step="0.1" placeholder="ex: 170"></div>
-        <div class="ff"><label>Peso <span class="un">kg</span></label><input type="number" id="n_peso" step="0.1" placeholder="ex: 70"></div>
-      </div>
-      <div class="ff" style="margin-top:10px;position:relative">
+      <div class="ff" style="position:relative;margin-bottom:8px">
         <label>Médico solicitante</label>
         <input type="text" id="n_medico" placeholder="Buscar ou cadastrar médico..." autocomplete="off" onfocus="abrirComboMedico()" oninput="_cboMedicoFiltrar()" onkeydown="onComboMedicoKey(event)" onblur="fecharComboMedicoDelay()">
         <div id="n_medico_drop" class="combo-drop" style="display:none"></div>
       </div>
-      <div class="frow" style="margin-top:10px;grid-template-columns:1fr">
-        <div class="ff"><label>Contexto clínico <span style="font-size:10px;color:#94a3b8;font-weight:400">(não aparece no laudo)</span></label><textarea id="n_obs_clinica" rows="3" placeholder="Ex: HAS, DM2, histórico de IAM…" style="width:100%;padding:7px 9px;border:1px solid #e5e7eb;border-radius:7px;font-size:12.5px;font-family:inherit;resize:vertical;outline:none;color:#0f172a"></textarea></div>
+      <div class="ff nv-ctx">
+        <label>Contexto clínico <span style="font-size:10px;color:#94a3b8;font-weight:400">(não aparece no laudo)</span></label>
+        <textarea id="n_obs_clinica" placeholder="Ex: HAS, DM2, histórico de IAM…"></textarea>
       </div>
     </div>
     <div class="modal-foot">
@@ -1735,7 +1757,8 @@ function atualizarTexto(fid){
         .replace('{GPAO}',   mc('c_ea_gp'))
         .replace('{DVI}',    mc('c_ea_dvi'))
         .replace('{AVA}',    mc('c_ea_ava'))
-        .replace('{AVAI}',   mc('c_ea_avai'));
+        .replace('{AVAI}',   mc('c_ea_avai'))
+        .replace('{GRAUEA}', (() => { const t = (document.getElementById('c_ea_grau')?.textContent || '').trim().toLowerCase(); return ['discreto','moderado','importante'].includes(t) ? t : '...'; })());
   };
   let texto = '';
 
@@ -1806,8 +1829,20 @@ const REF_CONFIG_DEFAULT = {
   eeSeptal:  { corte: 15 },
   eeLateral: { corte: 13 },
   vaei:      { leve: 34, moderado: 41, importante: 48 },
-  vadi:      { leve: 33, moderado: 38, importante: 44 }
+  vadi:      { leve: 33, moderado: 38, importante: 44 },
+  // Estenose aórtica (ASE/AHA): Vmax e GM = a partir de; AVA, AVAi e DVI = leve abaixo de / moderado e importante até
+  ao: {
+    vmax: { leve: 2.6,  moderado: 3.0,  importante: 4.0 },
+    gm:   { leve: 10,   moderado: 20,   importante: 40 },
+    ava:  { leve: 2.0,  moderado: 1.5,  importante: 1.0 },
+    avai: { leve: 1.2,  moderado: 0.85, importante: 0.6 },
+    dvi:  { leve: 0.75, moderado: 0.5,  importante: 0.25 }
+  }
 };
+
+// Estenose aórtica — níveis (crescente: Vmax, GM) e (decrescente: AVA, AVAi, DVI)
+function _nivelEAAlto(v, c){ return v >= c.importante ? 'importante' : v >= c.moderado ? 'moderado' : v >= c.leve ? 'leve' : null; }
+function _nivelEABaixo(v, c){ return v <= c.importante ? 'importante' : v <= c.moderado ? 'moderado' : v < c.leve ? 'leve' : null; }
 let REF_CONFIG = JSON.parse(JSON.stringify(REF_CONFIG_DEFAULT));
 
 function buildRefMedidas(){
@@ -1919,6 +1954,16 @@ function buildRefMedidas(){
     unidade: ' mmHg/s',
     ambos: { abs: { min: C.dpdtVd.min } }
   },
+  m_ea_vmax: {
+    unidade: ' m/s',
+    nivelFn: v => _nivelEAAlto(v, C.ao.vmax),
+    textoRange: '<' + C.ao.vmax.leve
+  },
+  m_ea_gm: {
+    unidade: ' mmHg',
+    nivelFn: v => _nivelEAAlto(v, C.ao.gm),
+    textoRange: '<' + C.ao.gm.leve
+  },
   m_diast_esep: {
     unidade: ' cm/s',
     porIdadeE: 'septal'
@@ -2020,6 +2065,23 @@ const REF_CONFIG_GROUPS = [
       ]},
       { titulo: 'dP/dT do VD', unidade: 'mmHg/s', campos: [ { path: 'dpdtVd.min', label: 'Alterado abaixo de' } ]},
       { titulo: 'PSVD — Pressão sistólica de VD', unidade: 'mmHg', campos: [ { path: 'psvd.corte', label: 'Alterado a partir de' } ]}
+  ]},
+  { titulo: 'Estenose aórtica', linhas: [
+      { titulo: 'Vmax Ao (e GP Ao)', unidade: 'm/s', campos: [
+          { path: 'ao.vmax.leve', label: 'Discreto a partir de' }, { path: 'ao.vmax.moderado', label: 'Moderado a partir de' }, { path: 'ao.vmax.importante', label: 'Importante a partir de' }
+      ]},
+      { titulo: 'GM Ao — gradiente médio', unidade: 'mmHg', campos: [
+          { path: 'ao.gm.leve', label: 'Discreto a partir de' }, { path: 'ao.gm.moderado', label: 'Moderado a partir de' }, { path: 'ao.gm.importante', label: 'Importante a partir de' }
+      ]},
+      { titulo: 'AVA — área valvar', unidade: 'cm²', campos: [
+          { path: 'ao.ava.leve', label: 'Discreto abaixo de' }, { path: 'ao.ava.moderado', label: 'Moderado até' }, { path: 'ao.ava.importante', label: 'Importante até' }
+      ]},
+      { titulo: 'AVAi — área valvar indexada', unidade: 'cm²/m²', campos: [
+          { path: 'ao.avai.leve', label: 'Discreto abaixo de' }, { path: 'ao.avai.moderado', label: 'Moderado até' }, { path: 'ao.avai.importante', label: 'Importante até' }
+      ]},
+      { titulo: 'DVI — índice de velocidade adimensional', unidade: '', campos: [
+          { path: 'ao.dvi.leve', label: 'Discreto abaixo de' }, { path: 'ao.dvi.moderado', label: 'Moderado até' }, { path: 'ao.dvi.importante', label: 'Importante até' }
+      ]}
   ]}
 ];
 
@@ -2132,6 +2194,11 @@ function fmtRef(n){ return String(Math.round(n * 10) / 10); }
 function avaliarMedida(fieldId, valor){
   const ref = REF_MEDIDAS[fieldId];
   if (!ref) return null;
+
+  if (ref.nivelFn) {
+    const nivel = ref.nivelFn(valor);
+    return { alterado: !!nivel, nivel, textoRange: ref.textoRange || '', unidade: ref.unidade };
+  }
 
   if (ref.porIdadeE) {
     const idade = atual?.dn ? calcIdadeAnos(atual.dn) : null;
@@ -2398,6 +2465,48 @@ function calcular(){
     } else {
       dviEl.style.display = 'none'; dviLbl.style.display = 'none';
       if (ea_vmax === null) gpdviRow2.style.display = 'none';
+    }
+
+    // Color coding (discreto/moderado/grave) dos valores calculados
+    const _corEA = (id, nivel) => {
+      const el = document.getElementById(id); if (!el) return;
+      el.classList.remove('alt','alt-leve','alt-moderado','alt-importante');
+      if (nivel) el.classList.add('alt-' + nivel);
+    };
+    const _A = REF_CONFIG.ao;
+    _corEA('c_ea_gp', ea_vmax !== null ? _nivelEAAlto(ea_vmax, _A.vmax) : null);
+    const _avaV = (vsve_d2 && vsve_vti2 && ea_vti) ? Math.PI * Math.pow((vsve_d2 / 10) / 2, 2) * vsve_vti2 / ea_vti : null;
+    _corEA('c_ea_ava', _avaV !== null ? _nivelEABaixo(Number(_avaV.toFixed(2)), _A.ava) : null);
+    const _scEA = getSC();
+    _corEA('c_ea_avai', (_avaV !== null && _scEA) ? _nivelEABaixo(Number((_avaV / _scEA).toFixed(2)), _A.avai) : null);
+    _corEA('c_ea_dvi', (vsve_vti2 && ea_vti) ? _nivelEABaixo(Number((vsve_vti2 / ea_vti).toFixed(2)), _A.dvi) : null);
+
+    // Grau da estenose aórtica — pior critério entre Vmax, GM, AVA e AVAi (editável pelo menu)
+    { const _gmV = g('m_ea_gm');
+      const _crit = [];
+      if (ea_vmax !== null) _crit.push(_nivelEAAlto(ea_vmax, _A.vmax));
+      if (_gmV !== null)    _crit.push(_nivelEAAlto(_gmV, _A.gm));
+      if (_avaV !== null)   _crit.push(_nivelEABaixo(Number(_avaV.toFixed(2)), _A.ava));
+      if (_avaV !== null && _scEA) _crit.push(_nivelEABaixo(Number((_avaV / _scEA).toFixed(2)), _A.avai));
+      const _rank = { leve: 1, moderado: 2, importante: 3 };
+      const _selEl = document.getElementById('m_ea_grau');
+      const _ov = _selEl ? _selEl.value : '';
+      let _nivel = null, _mostrar = false;
+      if (_ov) { _mostrar = true; _nivel = _ov === 'normal' ? null : _ov; }
+      else if (_crit.length) {
+        _mostrar = true;
+        _crit.forEach(n => { if (n && (!_nivel || _rank[n] > _rank[_nivel])) _nivel = n; });
+      }
+      const _grauEl = document.getElementById('c_ea_grau');
+      const _nomes = { leve: 'Discreto', moderado: 'Moderado', importante: 'Importante' };
+      if (_grauEl) {
+        _grauEl.textContent = _mostrar ? (_nivel ? _nomes[_nivel] : 'Sem estenose') : '—';
+        _grauEl.classList.remove('alt','alt-leve','alt-moderado','alt-importante');
+        if (_nivel) _grauEl.classList.add('alt-' + _nivel);
+      }
+      if (_selEl) _selEl.classList.toggle('ov', !!_ov);
+      const _grauRow = document.getElementById('ea_grau_row');
+      if (_grauRow) _grauRow.style.display = _mostrar ? '' : 'none';
     }
   }
 
@@ -2742,7 +2851,7 @@ function carregarForm(e){
   const m = e.medidas||{};
   ['m_dao','m_dae','m_ddvd','m_ddve','m_dsve','m_septo','m_parede','m_asc',
    'm_vol4c','m_vol2c','m_vad','m_fe_simp','m_psvd','m_vel_ao','m_vsve_d','m_vsve_vti','m_vsve_fc',
-   'm_ea_vmax','m_ea_gm','m_ea_vti',
+   'm_ea_vmax','m_ea_gm','m_ea_vti','m_ea_grau',
    'm_ve_mapse','m_ve_onds','m_ve_strain',
    'm_vd_tapse','m_vd_onds','m_vd_fac','m_vd_dpdt','m_vd_basal','m_vd_medio','m_vd_long',
    'm_diast_e','m_diast_a','m_diast_esep','m_diast_elat',
@@ -2788,7 +2897,7 @@ function coletarMedidas(){
   const m={};
   ['m_dao','m_dae','m_ddvd','m_ddve','m_dsve','m_septo','m_parede','m_asc',
    'm_vol4c','m_vol2c','m_vad','m_fe_simp','m_psvd','m_vel_ao','m_vsve_d','m_vsve_vti','m_vsve_fc',
-   'm_ea_vmax','m_ea_gm','m_ea_vti',
+   'm_ea_vmax','m_ea_gm','m_ea_vti','m_ea_grau',
    'm_ve_mapse','m_ve_onds','m_ve_strain',
    'm_vd_tapse','m_vd_onds','m_vd_fac','m_vd_dpdt','m_vd_basal','m_vd_medio','m_vd_long',
    'm_diast_e','m_diast_a','m_diast_esep','m_diast_elat',
@@ -4355,7 +4464,7 @@ const VARS = [
     ['{FE_T}','FE Teicholz'],['{FE_E}','FE Encurtamento'],['{VOLD}','Vol diastólico'],['{VOLS}','Vol sistólico'],
     ['{VAE}','Vol AE médio'],['{VAEi}','Vol AE indexado (VAEi)'],['{VAD}','Vol AD'],['{VADi}','Vol AD indexado (VADi)'],['{MV}','Massa VE'],['{MV_SC}','Massa VE / SC'],
     ['{MV_ALT}','Massa VE / Altura'],['{ER}','Espessura relativa'],['{SC}','Superfície corporal'],['{IMC}','IMC'],
-    ['{GPAO}','GP Ao (gradiente de pico)'],['{DVI}','DVI (índice de velocidade)'],['{AVA}','AVA (área valva aórtica)'],['{AVAI}','AVAi (AVA indexada)']
+    ['{GPAO}','GP Ao (gradiente de pico)'],['{DVI}','DVI (índice de velocidade)'],['{AVA}','AVA (área valva aórtica)'],['{AVAI}','AVAi (AVA indexada)'],['{GRAUEA}','Grau da estenose aórtica (discreto/moderado/importante)']
   ]}
 ];
 
