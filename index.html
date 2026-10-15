@@ -1732,6 +1732,8 @@ function atualizarTexto(fid){
         .replace('{FE}',     mv('m_fe_simp'))
         .replace('{FE_S}',   mv('m_fe_simp'))
         .replace('{PSVD}',   mc('c_psvd'))
+        .replace('{PAD}',    mv('m_pad'))
+        .replace('{VMAX_IT}', mv('m_vmax_it'))
         .replace('{TAPSE}',   mv('m_vd_tapse'))
         .replace('{ONDASVD}', mv('m_vd_onds'))
         .replace('{FAC}',     mv('m_vd_fac'))
@@ -4457,7 +4459,7 @@ const VARS = [
     ['{DAO}','Diâmetro aorta'],['{DAE}','Diâmetro átrio esquerdo'],['{DDVD}','DD ventrículo direito'],
     ['{DDVE}','DD ventrículo esquerdo'],['{DSVE}','DS ventrículo esquerdo'],['{SEPTO}','Septo interventricular'],
     ['{PAREDE}','Parede posterior'],['{ASC}','Aorta ascendente'],['{VDBASAL}','Diâmetro basal do VD'],['{VDMEDIO}','Diâmetro médio do VD'],['{VDLONG}','Diâmetro longitudinal do VD'],['{STRAIN}','Strain longitudinal VE'],['{VOL4C}','Volume 4 câmaras'],
-    ['{VOL2C}','Volume 2 câmaras'],['{FE}','FE Simpson'],['{FE_S}','FE Simpson (alternativa)'],['{PSVD}','Pressão sistólica VD'],['{TAPSE}','TAPSE'],['{ONDASVD}','Onda S´ do VD'],['{FAC}','FAC do VD'],['{VELAO}','Velocidade aórtica'],
+    ['{VOL2C}','Volume 2 câmaras'],['{FE}','FE Simpson'],['{FE_S}','FE Simpson (alternativa)'],['{PSVD}','Pressão sistólica VD'],['{PAD}','PAD (pressão do átrio direito)'],['{VMAX_IT}','Vel IT (velocidade da insuficiência tricúspide)'],['{TAPSE}','TAPSE'],['{ONDASVD}','Onda S´ do VD'],['{FAC}','FAC do VD'],['{VELAO}','Velocidade aórtica'],
     ['{VMAXAO}','Vmax Ao (estenose aórtica)'],['{GMAO}','GM Ao (estenose aórtica)'],['{VTIAO}','VTI Ao (estenose aórtica)']
   ]},
   {grupo:'Valores calculados', items:[
