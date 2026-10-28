@@ -1012,6 +1012,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         </div>
         <div class="sec">
           <div class="sec-ttl">Ventrículo Esquerdo</div>
+          <div class="m-row"><span class="m-lbl" title="FE de Teicholz informada manualmente — substitui o valor calculado">Teich</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_fe_teich" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">%</span></div>
           <div class="m-row"><span class="m-lbl">FE Simp.</span><input class="m-inp" type="text" inputmode="decimal" id="m_fe_simp" step="0.1" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">%</span></div>
           <div class="m-row"><span class="m-lbl">dP/dT</span><input class="m-inp" type="text" inputmode="decimal" id="m_dp_dt" step="1" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mmHg/s</span></div>
           <div class="m-row"><span class="m-lbl">MAPSE</span><input class="m-inp" type="text" inputmode="decimal" autocomplete="nope" id="m_ve_mapse" oninput="calcular();marcar(this)" onkeydown="navKey(event,this)"><span class="m-unit">mm</span></div>
@@ -2305,6 +2306,10 @@ function calcular(){
     else set('c_fe_t','Ver FE Simpson');
     set('c_fe_e', ((ddve-dsve)/ddve*100).toFixed(1),'%');
   } else { set('c_fe_t',null);set('c_fe_e',null);set('c_vd',null);set('c_vs',null); }
+  // FE Teicholz informada manualmente sobrescreve o valor calculado
+  { const feTeichMan = g('m_fe_teich');
+    if (feTeichMan !== null) set('c_fe_t', String(feTeichMan), '%');
+  }
 
   // Vol AE
   if (vol4c && vol2c) {
@@ -2852,7 +2857,7 @@ function renderDados(e){
 function carregarForm(e){
   const m = e.medidas||{};
   ['m_dao','m_dae','m_ddvd','m_ddve','m_dsve','m_septo','m_parede','m_asc',
-   'm_vol4c','m_vol2c','m_vad','m_fe_simp','m_psvd','m_vel_ao','m_vsve_d','m_vsve_vti','m_vsve_fc',
+   'm_vol4c','m_vol2c','m_vad','m_fe_teich','m_fe_simp','m_psvd','m_vel_ao','m_vsve_d','m_vsve_vti','m_vsve_fc',
    'm_ea_vmax','m_ea_gm','m_ea_vti','m_ea_grau',
    'm_ve_mapse','m_ve_onds','m_ve_strain',
    'm_vd_tapse','m_vd_onds','m_vd_fac','m_vd_dpdt','m_vd_basal','m_vd_medio','m_vd_long',
@@ -2898,7 +2903,7 @@ function carregarForm(e){
 function coletarMedidas(){
   const m={};
   ['m_dao','m_dae','m_ddvd','m_ddve','m_dsve','m_septo','m_parede','m_asc',
-   'm_vol4c','m_vol2c','m_vad','m_fe_simp','m_psvd','m_vel_ao','m_vsve_d','m_vsve_vti','m_vsve_fc',
+   'm_vol4c','m_vol2c','m_vad','m_fe_teich','m_fe_simp','m_psvd','m_vel_ao','m_vsve_d','m_vsve_vti','m_vsve_fc',
    'm_ea_vmax','m_ea_gm','m_ea_vti','m_ea_grau',
    'm_ve_mapse','m_ve_onds','m_ve_strain',
    'm_vd_tapse','m_vd_onds','m_vd_fac','m_vd_dpdt','m_vd_basal','m_vd_medio','m_vd_long',
