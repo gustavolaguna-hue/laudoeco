@@ -2311,6 +2311,24 @@ function calcular(){
     if (feTeichMan !== null) set('c_fe_t', String(feTeichMan), '%');
   }
 
+  // Função sistólica do VE (fs_ve) automática pela FE: Simpson; se vazio, Teich (manual ou calculado)
+  // Códigos MORFOLOGIA: 1 = normal, 7 = discreta, 8 = moderada, 9 = importante
+  { let feAuto = null;
+    if (feSimp !== null && feSimp > 0) feAuto = feSimp;
+    else if (g('m_fe_teich') !== null) feAuto = g('m_fe_teich');
+    else if (ddve && dsve) {
+      const _vd = (7/(2.4+ddve/10))*Math.pow(ddve/10,3), _vs = (7/(2.4+dsve/10))*Math.pow(dsve/10,3);
+      feAuto = (_vd - _vs) / _vd * 100;
+    }
+    const fsInp = document.getElementById('fs_ve_c');
+    if (feAuto !== null && fsInp && /^\s*\d*\s*$/.test(fsInp.value) && parseInt(fsInp.value) !== 0) {
+      const sx = atual?.sexo === 'Masculino' ? 'M' : (atual?.sexo === 'Feminino' ? 'F' : null);
+      const fc = sx ? REF_CONFIG.feSimp[sx] : { min: Math.min(REF_CONFIG.feSimp.F.min, REF_CONFIG.feSimp.M.min), leve: REF_CONFIG.feSimp.F.leve, moderado: REF_CONFIG.feSimp.F.moderado };
+      const fsCode = feAuto >= fc.min ? 1 : feAuto >= fc.leve ? 7 : feAuto >= fc.moderado ? 8 : 9;
+      if (String(fsInp.value).trim() !== String(fsCode)) { fsInp.value = fsCode; onCod('fs_ve','MORFOLOGIA'); }
+    }
+  }
+
   // Vol AE
   if (vol4c && vol2c) {
     const vae = (vol4c+vol2c)/2;
